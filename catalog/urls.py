@@ -1,8 +1,10 @@
 from django.contrib import admin
 from django.urls import path
 
-from views import my_view
+from catalog.views import my_view
+from catalog.views import my_view
 
 urlpatterns = [
-    path('catalog/admin', my_view),
+    path('admin/', my_view),
+
 ]

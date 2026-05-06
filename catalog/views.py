@@ -5,4 +5,4 @@ from catalog.models import Category
 
 def my_view(request):
     category = Category.objects.first()
-    return render(request, 'index.html', {'category': category})
+    return render(request, 'pages/../templates/index.html', {'category': category})
