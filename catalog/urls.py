@@ -1,10 +1,7 @@
-from django.contrib import admin
 from django.urls import path
-
-from catalog.views import my_view
-from catalog.views import my_view
+from . import views
 
 urlpatterns = [
-    path('admin/', my_view),
-
+    path('', views.category_view, name='categories'),
+    path('category/<int:pk>/', views.category_detail, name='category_detail'),
 ]
