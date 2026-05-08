@@ -1,0 +1,198 @@
+.header {
+    background: #d8d4c8;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+}
+
+
+.header .container {
+    --bs-gutter-x: 24px;
+}
+
+/* верхняя строка */
+.header__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    font-size: 11px;
+}
+
+/* текст сверху */
+.header__info {
+    display: flex;
+    flex-direction: column;
+    text-transform: uppercase;
+    letter-spacing: 1.3px;
+    line-height: 1.25;
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.header__info span:first-child {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.header__info span:last-child {
+    font-size: 11px;
+    opacity: 0.75;
+}
+
+/* линия */
+.header__divider {
+    height: 1px;
+    width: 100%;
+    background: linear-gradient(
+            to right,
+            transparent,
+            rgba(0, 0, 0, 0.12),
+            transparent
+    );
+}
+
+/* основная шапка */
+.header__main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 0;
+}
+
+/* меню */
+.nav {
+    display: flex;
+    gap: 32px;
+}
+
+.nav a {
+    position: relative;
+    text-decoration: none;
+    color: #000;
+
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+
+    padding: 6px 0;
+
+    display: inline-block;
+}
+
+/* линия под меню */
+.nav a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+
+    width: 0%;
+    height: 1px;
+    background: #000;
+
+    transition: width 0.3s ease;
+}
+
+.nav a:hover::after {
+    width: 100%;
+}
+
+/* кнопки */
+.header__contacts {
+    display: flex;
+    gap: 12px;
+}
+
+/* иконки */
+.header__icons {
+    display: flex;
+    gap: 12px;
+}
+
+.icon-btn {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+    transition: transform 0.25s ease;
+    will-change: transform;
+}
+
+.icon-btn:hover {
+    transform: scale(1.08);
+}
+
+.icon-btn img {
+    width: 20px;
+    height: 20px;
+}
+
+@media (max-width: 1024px) {
+    .header__main {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .nav {
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .header__top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .header__main {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .nav {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .header__contacts {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .header__icons {
+        gap: 8px;
+    }
+}
+
+@media (max-width: 576px) {
+    .header .container {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .nav {
+        gap: 10px;
+        font-size: 12px;
+    }
+
+    .header__info {
+        font-size: 10px;
+    }
+
+    .icon-btn {
+        width: 34px;
+        height: 34px;
+    }
+}
+

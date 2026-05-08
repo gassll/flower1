@@ -1,0 +1,66 @@
+.footer__col {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.footer {
+    background: #d8d4c8; /* как у шапки */
+    padding: 50px 0 20px;
+    font-size: 13px;
+    color: #111;
+}
+
+.footer__top {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+    margin-bottom: 30px;
+}
+
+.footer__title {
+    font-weight: 600;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 14px;
+}
+
+.footer__col a {
+    display: block;
+    text-decoration: none;
+    color: #111;
+    margin-bottom: 6px;
+    opacity: 0.7;
+    transition: 0.2s;
+}
+
+.footer__col a:hover {
+    opacity: 1;
+}
+
+.footer__text {
+    opacity: 0.7;
+    line-height: 1.4;
+}
+
+.footer__bottom {
+    border-top: 1px solid rgba(0,0,0,0.1);
+    padding-top: 15px;
+    text-align: center;
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+@media (max-width: 768px) {
+    .footer__top {
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .footer__top {
+        grid-template-columns: 1fr;
+    }
+}

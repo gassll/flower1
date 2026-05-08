@@ -3,44 +3,84 @@
 {% block title %}FlowerShop — Главная{% endblock %}
 
 {% block content %}
-<section class="text-center py-5" style="background: linear-gradient(135deg, #f5f0eb 0%, #e8e0d5 100%); padding: 80px 20px; border-radius: 10px;">
-    <h1 class="display-4 mb-3" style="letter-spacing: 3px;">FLOWERNA</h1>
-    <p class="lead mb-4">Доставка авторских букетов и оформление мероприятий</p>
-    <p class="mb-4">приём заказов с 08.00 до 22.00<br>доставка по Москве и МО 24/7</p>
-    {% if category %}
-    <a href="#" class="btn btn-dark btn-lg px-5">ПОСМОТРЕТЬ КАТЕГОРИЮ</a>
-    {% endif %}
-</section>
 
-<section class="hero-cards">
-    {% if categories %}
-        <div class="hero-grid">
-            {% for category in categories %}
-                <a href="#" class="hero-card">
-                    {% if category.image %}
-                        <img src="{{ category.image.url }}" alt="{{ category.name }}" class="hero-card__img">
-                    {% else %}
-                        <div class="hero-card__img hero-card__img--empty"></div>
-                    {% endif %}
 
-                    <div class="hero-card__overlay"></div>
+    <section class="text-center py-5"
+             style="background: linear-gradient(135deg, #f5f0eb 0%, #e8e0d5 100%); padding: 80px 20px; border-radius: 10px;">
+        <h1 class="display-4 mb-3" style="letter-spacing: 3px;">FLOWERNA</h1>
+        <p class="lead mb-4">Доставка авторских букетов и оформление мероприятий</p>
+        <p class="mb-4">приём заказов с 08.00 до 22.00<br>доставка по Москве и МО 24/7</p>
+        {% if category %}
+            <a href="#" class="btn btn-dark btn-lg px-5">ПОСМОТРЕТЬ КАТЕГОРИЮ</a>
+        {% endif %}
+    </section>
 
-                    <div class="hero-card__content">
-                        <h2 class="hero-card__title">{{ category.name }}</h2>
-                        <p class="hero-card__text">{{ category.description }}</p>
-                    </div>
 
-                    <div class="hero-card__arrow">›</div>
+
+    <section class="recommend-section py-5">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                <h2 class="recommend-section__title mb-0">РЕКОМЕНДУЕМ</h2>
+                <a href="{% url 'catalog' %}"class="recommend-section__btn">
+                    <span class="recommend-section__arrow">→</span>
+                    <span>СМОТРЕТЬ ВСЁ</span>
                 </a>
-            {% endfor %}
+            </div>
+
+            <div class="recommend-grid">
+                {% for product in recommended_products %}
+                    <a href="#" class="recommend-card">
+                        <div class="recommend-card__img-wrap">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="recommend-card__img">
+                            {% else %}
+                                <div class="recommend-card__img hero-card__img--empty"></div>
+                            {% endif %}
+                            <div class="recommend-card__heart">♡</div>
+                        </div>
+
+                        <div class="recommend-card__meta">
+                            <div class="recommend-card__price">от {{ product.price }} р.</div>
+                            <div class="recommend-card__name">{{ product.name }}</div>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
         </div>
-    {% else %}
-        <p>Категорий пока нет.</p>
-    {% endif %}
-</section>
+    </section>
+
+
+    <section class="text-center my-5">
+        <h2 class="display-6 text-uppercase" style="letter-spacing: 2px; color: #5a4a42;">КОЛЛЕКЦИЯ FLOWERNA</h2>
+    </section>
+
+    <section class="hero-cards">
+        {% if categories %}
+            <div class="hero-grid">
+                {% for category in categories %}
+                    <a href="#" class="hero-card">
+                        {% if category.image %}
+                            <img src="{{ category.image.url }}" alt="{{ category.name }}" class="hero-card__img">
+                        {% else %}
+                            <div class="hero-card__img hero-card__img--empty"></div>
+                        {% endif %}
+
+                        <div class="hero-card__overlay"></div>
+
+                        <div class="hero-card__content">
+                            <h2 class="hero-card__title">{{ category.name }}</h2>
+                            <p class="hero-card__text">{{ category.description }}</p>
+                        </div>
+
+                        <div class="hero-card__arrow">›</div>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>Категорий пока нет.</p>
+        {% endif %}
+    </section>
 {% endblock %}
-
-
 
 
 {#https://flowerna.ru/#}
