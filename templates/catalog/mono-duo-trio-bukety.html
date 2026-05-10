@@ -6,8 +6,9 @@
     <section class="catalog">
 
         <div class="catalog__header">
-            <h1>Все цветы</h1>
-            <p>Авторские букеты и композиции</p>
+            <h1>Моно, дуо и трио-букеты</h1>
+            <p>В разделе — моно-букеты, дуэты и трио-композиции из свежих цветов с доставкой по Москве. Идеальны для
+                тех, кто ценит минимализм, цвет и чистоту формы.</p>
         </div>
 
         <div class="catalog__filters">
@@ -51,7 +52,6 @@
         <div class="catalog__grid">
 
             {% for product in products %}
-
                 <a href="{% url 'product-detail' product.id %}" class="product-link">
 
                     <div class="product-card">
@@ -68,9 +68,7 @@
                         </div>
 
                     </div>
-
                 </a>
-
             {% endfor %}
 
         </div>

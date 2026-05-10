@@ -6,8 +6,9 @@
     <section class="catalog">
 
         <div class="catalog__header">
-            <h1>Все цветы</h1>
-            <p>Авторские букеты и композиции</p>
+            <h1>Вазы</h1>
+            <p>Ваза задаёт ритм всей композиции. Здесь — формы, которые подчёркивают букет, не спорят с ним и легко
+                вписываются в интерьер.</p>
         </div>
 
         <div class="catalog__filters">
@@ -51,26 +52,23 @@
         <div class="catalog__grid">
 
             {% for product in products %}
-
                 <a href="{% url 'product-detail' product.id %}" class="product-link">
 
-                    <div class="product-card">
+                <div class="product-card">
 
-                        {% if product.image %}
-                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                        {% else %}
-                            <div class="product-card__img--empty"></div>
-                        {% endif %}
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    {% else %}
+                        <div class="product-card__img--empty"></div>
+                    {% endif %}
 
-                        <div class="product-info">
-                            <h3>{{ product.name }}</h3>
-                            <p>от {{ product.price }} ₽</p>
-                        </div>
-
+                    <div class="product-info">
+                        <h3>{{ product.name }}</h3>
+                        <p>от {{ product.price }} ₽</p>
                     </div>
 
+                </div>
                 </a>
-
             {% endfor %}
 
         </div>

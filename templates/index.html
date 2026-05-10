@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}FlowerShop — Главная{% endblock %}
 
@@ -21,7 +22,7 @@
         <div class="container">
             <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
                 <h2 class="recommend-section__title mb-0">РЕКОМЕНДУЕМ</h2>
-                <a href="{% url 'catalog' %}"class="recommend-section__btn">
+                <a href="{% url 'catalog' %}" class="recommend-section__btn">
                     <span class="recommend-section__arrow">→</span>
                     <span>СМОТРЕТЬ ВСЁ</span>
                 </a>
@@ -51,7 +52,16 @@
 
 
     <section class="text-center my-5">
-        <h2 class="display-6 text-uppercase" style="letter-spacing: 2px; color: #5a4a42;">КОЛЛЕКЦИЯ FLOWERNA</h2>
+        <div class="container d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+            <h2 class="recommend-section__title mb-0">
+                КОЛЛЕКЦИЯ FLOWERNA
+            </h2>
+
+            <a href="{% url 'catalog' %}" class="recommend-section__btn">
+                <span class="recommend-section__arrow">→</span>
+                <span>СМОТРЕТЬ ВСЁ</span>
+            </a>
+        </div>
     </section>
 
     <section class="hero-cards">
@@ -80,6 +90,16 @@
             <p>Категорий пока нет.</p>
         {% endif %}
     </section>
+
+
+    <section class="hero-banner">
+    <div class="container-fluid p-0">
+
+        <img src="{% static 'images/index.jpg' %}" alt="Flowerna">
+
+    </div>
+</section>
+
 {% endblock %}
 
 

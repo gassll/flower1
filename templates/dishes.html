@@ -1,0 +1,12 @@
+<form method="get">
+    <input type="text" name="search" placeholder="Поиск по названию" value="{{ search_query }}">
+    <button type="submit">Найти</button>
+</form>
+
+<ul>
+    {% for dish in dishes %}
+        <li>{{ dish.name }} — {{ dish.category.name }}</li>
+    {% empty %}
+        <li>Ничего не найдено</li>
+    {% endfor %}
+</ul>

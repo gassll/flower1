@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<section class="product-detail py-5">
+
+    <div class="container">
+
+        <!-- КНОПКА НАЗАД -->
+        <a href="{% url 'catalog' %}" class="back-btn">
+            ← Назад
+        </a>
+
+        <div class="row mt-4 align-items-start">
+
+            <!-- ФОТО -->
+            <div class="col-lg-6">
+
+                {% if product.image %}
+                    <img src="{{ product.image.url }}"
+                         alt="{{ product.name }}"
+                         class="img-fluid rounded product-detail__img">
+                {% endif %}
+
+            </div>
+
+            <!-- ИНФОРМАЦИЯ -->
+            <div class="col-lg-6">
+
+                <h1 class="product-detail__title">
+                    {{ product.name }}
+                </h1>
+
+                <!-- ОПИСАНИЕ -->
+                <p class="product-detail__desc">
+
+                    {% if product.description %}
+                        {{ product.description }}
+                    {% else %}
+                        Стильный авторский букет из свежих цветов,
+                        собранный вручную флористами FLOWERNA.
+                    {% endif %}
+
+                </p>
+
+                <h3 class="product-detail__price">
+                    от {{ product.price }} ₽
+                </h3>
+
+                <button class="btn btn-dark mt-4 px-5">
+                    В корзину
+                </button>
+
+                <!-- ДОП ИНФО -->
+                <div class="product-detail__info mt-5">
+
+                    <div>Свежие цветы каждый день</div>
+                    <div>Фото букета перед отправкой</div>
+                    <div>Доставка по Москве 24/7</div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

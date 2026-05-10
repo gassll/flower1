@@ -6,8 +6,10 @@
     <section class="catalog">
 
         <div class="catalog__header">
-            <h1>Все цветы</h1>
-            <p>Авторские букеты и композиции</p>
+            <h1>Цветы в коробке</h1>
+            <p>ЦВЕТЫ В КОРОБКЕЦветы в шляпной коробке — это классика с историей, где оформление играет не меньшую роль,
+                чем сами цветы. Композиция уже с влагой, не требует вазы и выглядит как законченный, стильный
+                подарок.</p>
         </div>
 
         <div class="catalog__filters">
@@ -55,7 +57,6 @@
                 <a href="{% url 'product-detail' product.id %}" class="product-link">
 
                     <div class="product-card">
-
                         {% if product.image %}
                             <img src="{{ product.image.url }}" alt="{{ product.name }}">
                         {% else %}
@@ -68,9 +69,7 @@
                         </div>
 
                     </div>
-
                 </a>
-
             {% endfor %}
 
         </div>

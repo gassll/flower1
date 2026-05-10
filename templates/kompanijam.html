@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <!-- HERO -->
+    <section class="py-5 text-center"
+             style="background: #f5f0eb; padding: 80px 20px;">
+
+        <div class="container">
+
+            <h1 style="font-size: 48px; letter-spacing: 2px;">
+                КОМПАНИЯМ
+            </h1>
+
+            <p class="mt-3" style="color:#666; max-width: 700px; margin: 0 auto;">
+                Цветы для бизнеса, которому важно впечатление.
+                Работаем с корпоративными клиентами, создавая букеты,
+                композиции и оформление мероприятий.
+            </p>
+
+        </div>
+    </section>
+
+
+    <!-- ABOUT -->
+    <section class="py-5">
+        <div class="container">
+
+            <div class="row align-items-center">
+
+                <div class="col-12 col-lg-6">
+                    <h2>FLOWERNA ДЛЯ БИЗНЕСА</h2>
+
+                    <p style="color:#666;">
+                        Нам доверяют десятки компаний. Мы создаём
+                        цветочные решения для офисов, мероприятий и подарков.
+                    </p>
+
+                    <div class="row g-4 mt-4">
+
+                        <div class="col-md-6">
+                            <div class="service-card">
+                                <h5>ПОДАРКИ ПАРТНЁРАМ И СОТРУДНИКАМ</h5>
+                                <p>Элегантные букеты и композиции для поздравлений и корпоративных событий.</p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="service-card">
+                                <h5>ОФОРМЛЕНИЕ ОФИСОВ И РЕСЕПШН</h5>
+                                <p>Регулярное цветочное оформление рабочих пространств и зон приёма клиентов.</p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="service-card">
+                                <h5>ЦВЕТЫ ДЛЯ МЕРОПРИЯТИЙ</h5>
+                                <p>Декор для презентаций, конференций, открытий и деловых встреч.</p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="service-card">
+                                <h5>ИНДИВИДУАЛЬНЫЕ ЗАКАЗЫ</h5>
+                                <p>Создаём уникальные цветочные решения под задачи вашей компании.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <img src="{% static 'images/kompanijam.webp' %}"
+                         style="width:100%; height:400px; object-fit:cover; border-radius:12px;">
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- SERVICES -->
+    <section class="py-5" style="background:#faf7f3;">
+        <div class="container">
+
+            <h2 class="text-center mb-5">НАШИ УСЛУГИ</h2>
+
+            <div class="row text-center">
+
+                <div class="col-6 col-lg-3 text-center">
+                    <img src="{% static 'images/office.png' %}"
+                         alt="Офисы"
+                         class="service-icon">
+                    <h5>ОФИСЫ</h5>
+                    <p>Регулярное оформление рабочих пространств</p>
+                </div>
+
+                <div class="col-6 col-lg-3 text-center">
+                    <img src="{% static 'images/gift.png' %}"
+                         alt="Подарки"
+                         class="service-icon">
+                    <h5>ПОДАРКИ</h5>
+                    <p style="color:#666;">Корпоративные букеты и наборы</p>
+                </div>
+
+                <div class="col-6 col-lg-3 text-center">
+                    <img src="{% static 'images/holiday.png' %}"
+                         alt="Мероприятия"
+                         class="service-icon">
+                    <h5>МЕРОПРИЯТИЯ</h5>
+                    <p style="color:#666;">Оформление событий и презентаций</p>
+                </div>
+
+                <div class="col-6 col-lg-3 text-center">
+                    <img src="{% static 'images/calendar.png' %}"
+                         alt="Индивидуально"
+                         class="service-icon">
+                    <h5>ИНДИВИДУАЛЬНО</h5>
+                    <p style="color:#666;">Проекты под задачу компании</p>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- CTA -->
+    <section class="py-5 text-center">
+
+        <div class="container">
+
+            <h2>Хотите сотрудничать?</h2>
+
+            <p style="color:#666;">
+                Напишите нам — мы подготовим предложение под ваш бизнес
+            </p>
+
+            <a href="#" class="btn btn-dark px-5 mt-3">
+                ОБСУДИТЬ ПРОЕКТ
+            </a>
+
+        </div>
+
+    </section>
+
+{% endblock %}
