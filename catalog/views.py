@@ -102,10 +102,22 @@ def kompanijam(request):
 def dostavka_i_oplata(request):
     return render(request, 'dostavka-i-oplata.html')
 
+def politika_konfidentsialnosti(request):
+    return render(request, 'politika-konfidentsialnosti.html')
+
 
 def product_detail(request, id):
     product = Product.objects.get(id=id)
 
     return render(request, 'catalog/product_detail.html', {
         'product': product
+    })
+
+def category_detail(request, slug):
+    category = get_object_or_404(Category, slug=slug)
+    products = Product.objects.filter(category=category)
+
+    return render(request, 'category_detail.html', {
+        'category': category,
+        'products': products
     })

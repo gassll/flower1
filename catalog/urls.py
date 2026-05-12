@@ -13,7 +13,10 @@ urlpatterns = [
     path('tsvety-v-korobkah/', views.tsvety_v_korobkah, name='tsvety-v-korobkah'),
     path('vazy/', views.vazy, name='vazy'),
     path('dostavka-i-oplata/', views.dostavka_i_oplata, name='dostavka-i-oplata'),
+    path('politika-konfidentsialnosti/', views.politika_konfidentsialnosti, name='politika-konfidentsialnosti'),
 
     path('product/<int:id>/', views.product_detail, name='product-detail'),
+
+    path('category/<slug:slug>/', views.category_detail, name='category_detail'),
     # path('dishes/', views.dish_list, name='dish_list'),
 ]

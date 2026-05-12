@@ -68,7 +68,7 @@
         {% if categories %}
             <div class="hero-grid">
                 {% for category in categories %}
-                    <a href="#" class="hero-card">
+                    <a href="/{{ category.slug }}/" class="hero-card">
                         {% if category.image %}
                             <img src="{{ category.image.url }}" alt="{{ category.name }}" class="hero-card__img">
                         {% else %}
