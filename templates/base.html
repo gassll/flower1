@@ -40,7 +40,11 @@
 {% include 'components/header.html' %}
 
 <!-- Основной контент -->
-
+{#кнопка выхода из акка#}
+{#<form method="post" action="{% url 'logout' %}">#}
+{#    {% csrf_token %}#}
+{#    <button type="submit" class="btn btn-danger">Выход</button>#}
+{#</form>#}
 <main class="container my-4">
     {% block content %}
     {% endblock %}
