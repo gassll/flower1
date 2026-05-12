@@ -40,12 +40,3 @@ class Product(models.Model):
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
 
-
-
-# class Dish(models.Model):
-#     name = models.CharField(max_length=200)
-#     category = models.ForeignKey('Category', on_delete=models.CASCADE)
-#     description = models.TextField()
-#
-#     def __str__(self):
-#         return self.name
