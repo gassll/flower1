@@ -1,29 +1,104 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="ru">
 <head>
-    <meta charset="utf-8">
-    <title>Каталог</title></head>
+    <meta charset="UTF-8">
+
+    <title>
+        {% if selected_category %}
+            {{ selected_category.name }}
+        {% else %}
+            Каталог
+        {% endif %}
+    </title>
+
+</head>
+
 <body>
-<h1>Категории</h1>
-<ul>
-    {% for cat in categories %}
+
+<h1>Каталог</h1>
+
+
+<!-- Категории -->
+
+<div class="categories">
+
+    <h2>Категории</h2>
+
+    <ul>
+
         <li>
-            <a href="?category={{ cat.slug }}">{{ cat.name }}</a>
+            <a href="{% url 'catalog' %}">
+                Все товары
+            </a>
         </li>
-    {% endfor %}
-</ul> {% if selected_category %}
-    <h2>Товары в категории: {{ selected_category.name }}</h2>
-    {% if products %}
-        <ul>
-            {% for p in products %}
-                <li>{{ p.name }} — {{ p.price }}</li>
-            {% endfor %}
-        </ul>
+
+        {% for category in categories %}
+
+            <li>
+
+                <a href="{% url 'category_detail' category.slug %}">
+
+                    {{ category.name }}
+
+                </a>
+
+            </li>
+
+        {% endfor %}
+
+    </ul>
+
+</div>
+
+
+<!-- Товары -->
+
+<div class="products">
+
+    {% if selected_category %}
+
+        <h2>{{ selected_category.name }}</h2>
+
     {% else %}
-        <p>Товары отсутствуют.</p>
+
+        <h2>Все товары</h2>
+
     {% endif %}
-{% else %}
-    <p>Выберите категорию, чтобы увидеть товары.</p>
-{% endif %}
+
+
+    {% if products %}
+
+        <ul>
+
+            {% for product in products %}
+
+                <li>
+
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" width="150">
+                    {% endif %}
+
+                    <h3>{{ product.name }}</h3>
+
+                    <p>{{ product.price }} ₽</p>
+
+                    <a href="{% url 'product-detail' product.id %}">
+                        Подробнее
+                    </a>
+
+                </li>
+
+            {% endfor %}
+
+        </ul>
+
+    {% else %}
+
+        <p>Товары отсутствуют</p>
+
+    {% endif %}
+
+</div>
+
 </body>
-</html> (Ссылки на категории — простые GET-параметры, удобно для SPA-подхода без дополнительных urlconf.)
+</html>

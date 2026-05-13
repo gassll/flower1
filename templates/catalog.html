@@ -16,27 +16,27 @@
                 Все
             </a>
 
-            <a href="{% url 'avtorskie-bukety' %}"
+            <a href="{% url 'category_detail' 'avtorskie-bukety' %}"
                class="btn {% if request.resolver_match.url_name == 'avtorskie-bukety' %}active{% endif %}">
                 Авторские букеты
             </a>
-            <a href="{% url 'mono-duo-trio-bukety' %}"
+            <a href="{% url 'category_detail' 'mono-duo-i-trio-bukety' %}"
                class="btn {% if request.resolver_match.url_name == 'mono-duo-trio-bukety' %}active{% endif %}">
                 Моно, дуо и трио-букеты
             </a>
 
-            <a href="{% url 'korzini-cvetov' %}"
+            <a href="{% url 'category_detail' 'korzini-cvetov' %}"
                class="btn {% if request.resolver_match.url_name == 'korzini-cvetov' %}active{% endif %}">
                 Корзины цветов
             </a>
 
 
-            <a href="{% url 'tsvety-v-korobkah' %}"
+            <a href="{% url 'category_detail' 'tsvety-v-korobkah' %}"
                class="btn {% if request.resolver_match.url_name == 'tsvety-v-korobkah' %}active{% endif %}">
                 Цветы в коробке
             </a>
 
-            <a href="{% url 'vazy' %}"
+            <a href="{% url 'category_detail' 'vazy' %}"
                class="btn {% if request.resolver_match.url_name == 'vazy' %}active{% endif %}">
                 Вазы
             </a>

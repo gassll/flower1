@@ -8,13 +8,22 @@ class Category(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to='categories/', null=True, blank=True, verbose_name='Изображение')
-    slug = AutoSlugField(populate_from='name', unique=True, blank=True, always_update=True)
+    slug = AutoSlugField(
+        populate_from='name',
+        unique=True,
+        blank=True
+    )
     is_featured = models.BooleanField(default=False)
 
     # def save(self, *args, **kwargs):
-    #     if not self.slug:
-    #         self.slug = slugify(self.name, allow_unicode=True)
+    #     new_slug = slugify(self.name)
+    #
+    #     if self.slug != new_slug:
+    #         self.slug = new_slug
+    #
     #     super().save(*args, **kwargs)
+
+
 
     def __str__(self):
         return self.name

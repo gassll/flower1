@@ -7,6 +7,9 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ['name', 'slug', 'description']
     search_fields = ['name']
 
+    fields = ['name', 'slug', 'description', 'image', 'is_featured']
+    readonly_fields = ['slug']
+
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):

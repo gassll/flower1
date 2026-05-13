@@ -15,32 +15,37 @@ def my_view(request):
     })
 
 
-def category_detail(request, pk, slug):
-    category = get_object_or_404(Category, pk=pk)
-    products = Product.objects.filter(category=slug)
+def category_detail(request, slug):
     categories = Category.objects.all().order_by('name')
-    slug = request.GET.get('category')
-    selected = None
-    products = None
-    if slug:
-        selected = get_object_or_404(Category, slug=slug)
-    products = Product.objects.filter(category=selected, is_available=True)
-    context = {
+
+    selected_category = get_object_or_404(
+        Category,
+        slug=slug
+    )
+
+    products = Product.objects.filter(
+        category=selected_category,
+        is_available=True
+    )
+
+    return render(request, 'catalog.html', {
         'categories': categories,
-        'selected_category': selected,
-        'products': products,
-    }
-    return render(request, 'index.html', {
-        'category': category,
+        'selected_category': selected_category,
         'products': products,
     })
 
 
 def catalog(request):
-    products = Product.objects.all()
+    categories = Category.objects.all().order_by('name')
+
+    products = Product.objects.filter(
+        is_available=True
+    ).select_related('category')
 
     return render(request, 'catalog.html', {
+        'categories': categories,
         'products': products,
+        'selected_category': None,
     })
 
 
@@ -63,36 +68,6 @@ def about(request):
     return render(request, 'about.html')
 
 
-# def avtorskie_bukety(request):
-#     category = Category.objects.get(slug='avtorskie-bukety')
-#     products = Product.objects.filter(category=category)
-#     return render(request, 'catalog/avtorskie-bukety.html', {'products': products})
-#
-#
-# def vazy(request):
-#     category = Category.objects.get(slug='vazy')
-#     products = Product.objects.filter(category=category)
-#     return render(request, 'catalog/vazy.html', {'products': products})
-#
-#
-# def mono_duo_trio_bukety(request):
-#     category = Category.objects.get(slug='mono-duo-trio-bukety')
-#     products = Product.objects.filter(category=category)
-#     return render(request, 'catalog/mono-duo-trio-bukety.html', {'products': products})
-#
-#
-# def korzini_cvetov(request):
-#     category = Category.objects.get(slug='korzini-cvetov')
-#     products = Product.objects.filter(category=category)
-#     return render(request, 'catalog/korzini-cvetov.html', {'products': products})
-#
-#
-# def tsvety_v_korobkah(request):
-#     category = Category.objects.get(slug='tsvety-v-korobkah')
-#     products = Product.objects.filter(category=category)
-#     return render(request, 'catalog/tsvety-v-korobkah.html', {'products': products})
-#
-#
 def kompanijam(request):
     return render(request, 'kompanijam.html')
 
@@ -106,7 +81,7 @@ def politika_konfidentsialnosti(request):
 
 
 def product_detail(request, id):
-    product = Product.objects.get(id=id)
+    product = get_object_or_404(Product, id=id)
 
     return render(request, 'catalog/product_detail.html', {
         'product': product
