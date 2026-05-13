@@ -34,15 +34,19 @@
         <div class="header__icons">
 
             <a href="#" class="icon-btn">
-                <img src="{% static 'icons/proicons_search.svg' %}" alt="">
+                <img src="{% static 'icons/proicons_search.svg' %}" alt="search">
             </a>
 
             <a href="#" class="icon-btn">
-                <img src="{% static 'icons/si_heart-line.svg' %}" alt="">
+                <img src="{% static 'icons/si_heart-line.svg' %}" alt="favorites">
             </a>
 
             <a href="#" class="icon-btn">
-                <img src="{% static 'icons/bag.svg' %}" alt="">
+                <img src="{% static 'icons/bag.svg' %}" alt="bag">
+            </a>
+
+            <a href="{% url 'register' %}" class="icon-btn">
+                <img src="{% static 'icons/profile.png' %}" alt="profile">
             </a>
 
         </div>
