@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Каталог</title></head>
+<body>
+<h1>Категории</h1>
+<ul>
+    {% for cat in categories %}
+        <li>
+            <a href="?category={{ cat.slug }}">{{ cat.name }}</a>
+        </li>
+    {% endfor %}
+</ul> {% if selected_category %}
+    <h2>Товары в категории: {{ selected_category.name }}</h2>
+    {% if products %}
+        <ul>
+            {% for p in products %}
+                <li>{{ p.name }} — {{ p.price }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Товары отсутствуют.</p>
+    {% endif %}
+{% else %}
+    <p>Выберите категорию, чтобы увидеть товары.</p>
+{% endif %}
+</body>
+</html> (Ссылки на категории — простые GET-параметры, удобно для SPA-подхода без дополнительных urlconf.)

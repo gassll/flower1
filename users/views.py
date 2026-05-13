@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from .forms import RegisterForm, LoginForm
+from slugger import AutoSlugField
+
 
 def register_view(request):
     if request.method == 'POST':
@@ -17,6 +19,9 @@ def register_view(request):
 
 
 def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+
     if request.method == 'POST':
         form = LoginForm(request, data=request.POST)
 

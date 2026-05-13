@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.text import slugify
+from autoslug import AutoSlugField
 
 
 class Category(models.Model):
@@ -7,13 +8,13 @@ class Category(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to='categories/', null=True, blank=True, verbose_name='Изображение')
-    slug = models.SlugField(unique=True, blank=True)
+    slug = AutoSlugField(populate_from='name', unique=True, blank=True, always_update=True)
     is_featured = models.BooleanField(default=False)
 
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name, allow_unicode=True)
-        super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     if not self.slug:
+    #         self.slug = slugify(self.name, allow_unicode=True)
+    #     super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -39,4 +40,3 @@ class Product(models.Model):
     class Meta:
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
-
