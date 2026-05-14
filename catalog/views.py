@@ -15,6 +15,53 @@ def my_view(request):
     })
 
 
+# def category_detail(request, slug):
+#     categories = Category.objects.all().order_by('name')
+#
+#     selected_category = get_object_or_404(
+#         Category,
+#         slug=slug
+#     )
+#
+#     products = Product.objects.filter(
+#         category=selected_category,
+#         is_available=True
+#     )
+#
+#     return render(request, 'catalog.html', {
+#         'categories': categories,
+#         'selected_category': selected_category,
+#         'products': products,
+#     })
+
+
+# def catalog(request):
+#     categories = Category.objects.all().order_by('name')
+#
+#     products = Product.objects.filter(
+#         is_available=True
+#     ).select_related('category')
+#
+#     return render(request, 'catalog.html', {
+#         'categories': categories,
+#         'products': products,
+#         'selected_category': None,
+#     })
+
+def catalog(request):
+    categories = Category.objects.all().order_by('name')
+
+    products = Product.objects.filter(
+        is_available=True
+    ).select_related('category')
+
+    return render(request, 'catalog.html', {
+        'categories': categories,
+        'products': products,
+        'category_slug': None,
+    })
+
+
 def category_detail(request, slug):
     categories = Category.objects.all().order_by('name')
 
@@ -28,24 +75,10 @@ def category_detail(request, slug):
         is_available=True
     )
 
-    return render(request, 'catalog.html', {
-        'categories': categories,
-        'selected_category': selected_category,
-        'products': products,
-    })
-
-
-def catalog(request):
-    categories = Category.objects.all().order_by('name')
-
-    products = Product.objects.filter(
-        is_available=True
-    ).select_related('category')
-
-    return render(request, 'catalog.html', {
+    return render(request, 'catalog.html', {  # ← обратно 'catalog.html'
         'categories': categories,
         'products': products,
-        'selected_category': None,
+        'category_slug': slug,
     })
 
 

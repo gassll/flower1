@@ -6,40 +6,22 @@
     <section class="catalog">
 
         <div class="catalog__header">
-            <h1>Все цветы</h1>
-            <p>Авторские букеты и композиции</p>
+            <h1>{% block catalog_title %}Все цветы{% endblock %}</h1>
+            <p>{% block catalog_subtitle %}Авторские букеты и композиции{% endblock %}</p>
         </div>
 
         <div class="catalog__filters">
             <a href="{% url 'catalog' %}"
-               class="btn {% if request.resolver_match.url_name == 'catalog' %}active{% endif %}">
+               class="btn {% if not category_slug %}active{% endif %}">
                 Все
             </a>
 
-            <a href="{% url 'category_detail' 'avtorskie-bukety' %}"
-               class="btn {% if request.resolver_match.url_name == 'avtorskie-bukety' %}active{% endif %}">
-                Авторские букеты
-            </a>
-            <a href="{% url 'category_detail' 'mono-duo-i-trio-bukety' %}"
-               class="btn {% if request.resolver_match.url_name == 'mono-duo-trio-bukety' %}active{% endif %}">
-                Моно, дуо и трио-букеты
-            </a>
-
-            <a href="{% url 'category_detail' 'korzini-cvetov' %}"
-               class="btn {% if request.resolver_match.url_name == 'korzini-cvetov' %}active{% endif %}">
-                Корзины цветов
-            </a>
-
-
-            <a href="{% url 'category_detail' 'tsvety-v-korobkah' %}"
-               class="btn {% if request.resolver_match.url_name == 'tsvety-v-korobkah' %}active{% endif %}">
-                Цветы в коробке
-            </a>
-
-            <a href="{% url 'category_detail' 'vazy' %}"
-               class="btn {% if request.resolver_match.url_name == 'vazy' %}active{% endif %}">
-                Вазы
-            </a>
+            {% for category in categories %}
+                <a href="{% url 'category_detail' category.slug %}"
+                   class="btn {% if category_slug == category.slug %}active{% endif %}">
+                    {{ category.name }}
+                </a>
+            {% endfor %}
         </div>
 
         {% if request.user.is_authenticated and request.user.is_staff %}
@@ -51,26 +33,23 @@
         <div class="catalog__grid">
 
             {% for product in products %}
-
                 <a href="{% url 'product-detail' product.id %}" class="product-link">
-
                     <div class="product-card">
-
                         {% if product.image %}
                             <img src="{{ product.image.url }}" alt="{{ product.name }}">
                         {% else %}
                             <div class="product-card__img--empty"></div>
                         {% endif %}
-
                         <div class="product-info">
                             <h3>{{ product.name }}</h3>
                             <p>от {{ product.price }} ₽</p>
                         </div>
-
                     </div>
-
                 </a>
-
+            {% empty %}
+                <div class="catalog__empty">
+                    <p>Товаров в этой категории пока нет</p>
+                </div>
             {% endfor %}
 
         </div>

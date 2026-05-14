@@ -11,18 +11,12 @@ class Category(models.Model):
     slug = AutoSlugField(
         populate_from='name',
         unique=True,
-        blank=True
+        blank=True,
+        always_update=True,
     )
+
+
     is_featured = models.BooleanField(default=False)
-
-    # def save(self, *args, **kwargs):
-    #     new_slug = slugify(self.name)
-    #
-    #     if self.slug != new_slug:
-    #         self.slug = new_slug
-    #
-    #     super().save(*args, **kwargs)
-
 
 
     def __str__(self):

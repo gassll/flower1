@@ -11,10 +11,10 @@
         </div>
 
         <div class="footer__col">
-            <a href="{% url 'category_detail' 'avtorskie-bukety' %}">Авторские букеты</a>
-            <a href="{% url 'category_detail' 'vazy' %}">Вазы</a>
-            <a href="{% url 'category_detail' 'mono-duo-trio-bukety' %}">Моно букеты</a>
-            <a href="{% url 'category_detail' 'korzini-cvetov' %}">Корзины цветов</a>
+            <div class="footer__title">КАТАЛОГ</div>
+            {% for category in footer_categories %}
+                <a href="{% url 'category_detail' category.slug %}">{{ category.name }}</a>
+            {% endfor %}
         </div>
 
         <div class="footer__col">
@@ -25,9 +25,8 @@
 
         <div class="footer__col">
             <div class="footer__title">ИНФО</div>
-            <a href="{% url 'dostavka-i-oplata' %}">
-                Доставка и оплата
-            </a> <a href="{% url 'politika-konfidentsialnosti' %}">Политика</a>
+            <a href="{% url 'dostavka-i-oplata' %}">Доставка и оплата</a>
+            <a href="{% url 'politika-konfidentsialnosti' %}">Политика</a>
         </div>
 
     </div>

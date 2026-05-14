@@ -5,7 +5,7 @@ urlpatterns = [
     path('', views.my_view, name='home'),  # главная
 
     path('catalog/', views.catalog, name='catalog'),
-    path('catalog/<slug:slug>/', views.category_detail, name='category_detail'),
+    path('catalog/category/<slug:slug>/', views.category_detail, name='category_detail'),
 
     path('product/<int:id>/', views.product_detail, name='product-detail'),
 
