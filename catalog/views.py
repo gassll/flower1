@@ -63,10 +63,17 @@ def catalog(request):
     categories = Category.objects.all().order_by('name')
 
     query = (request.GET.get('q') or '').strip()
+    min_price = request.GET.get('min_price')
+    max_price = request.GET.get('max_price')
 
     products = Product.objects.filter(
         is_available=True
     ).select_related('category')
+    if min_price:
+        products = products.filter(price__gte=min_price)
+
+    if max_price:
+        products = products.filter(price__lte=max_price)
 
     user_favorites = []
 
@@ -92,6 +99,7 @@ def catalog(request):
         'query': query,
         'user_favorites': user_favorites,
     })
+
 
 
 def category_detail(request, slug):
@@ -173,7 +181,6 @@ def product_detail(request, id):
 
 @login_required
 def add_to_favorites(request, product_id):
-
     if request.method == 'POST':
 
         product = get_object_or_404(Product, id=product_id)
@@ -192,6 +199,7 @@ def add_to_favorites(request, product_id):
             )
 
     return redirect(request.META.get('HTTP_REFERER', 'catalog'))
+
 
 @login_required
 def add_to_cart(request, product_id):
@@ -226,6 +234,7 @@ def favorites(request):
         'cart_count': get_cart_count(request.user),
     })
 
+
 @login_required
 def cart(request):
     items = Cart.objects.filter(user=request.user)
@@ -246,6 +255,7 @@ def cart_increase(request, product_id):
     item.save()
     return redirect('cart')
 
+
 @login_required
 def cart_decrease(request, product_id):
     item = Cart.objects.get(user=request.user, product_id=product_id)
@@ -258,14 +268,21 @@ def cart_decrease(request, product_id):
 
     return redirect('cart')
 
+
 @login_required
 def cart_remove(request, product_id):
     Cart.objects.filter(user=request.user, product_id=product_id).delete()
     return redirect('cart')
 
+
+@login_required
 def checkout(request):
-    cart = request.session.get('cart', {})
+    items = Cart.objects.filter(user=request.user)
+
+    total = sum(item.product.price * item.quantity for item in items)
 
     return render(request, 'catalog/checkout.html', {
-        'cart': cart
+        'items': items,
+        'total': total,
+        'cart_count': get_cart_count(request.user),
     })

@@ -10,22 +10,50 @@
             <p>{% block catalog_subtitle %}Авторские букеты и композиции{% endblock %}</p>
         </div>
 
-        <div class="catalog__filters">
-            <a href="{% url 'catalog' %}"
-               class="btn {% if not category_slug %}active{% endif %}">
-                Все
-            </a>
+        <div class="catalog__filters-wrapper">
 
-            {% for category in categories %}
-                <a href="{% url 'category_detail' category.slug %}"
-                   class="btn {% if category_slug == category.slug %}active{% endif %}">
-                    {{ category.name }}
+            <!-- КАТЕГОРИИ -->
+            <div class="catalog__categories">
+
+                <a href="{% url 'catalog' %}"
+                   class="btn {% if not category_slug %}active{% endif %}">
+                    Все
                 </a>
-            {% endfor %}
+
+                {% for category in categories %}
+                    <a href="{% url 'category_detail' category.slug %}"
+                       class="btn {% if category_slug == category.slug %}active{% endif %}">
+                        {{ category.name }}
+                    </a>
+                {% endfor %}
+
+            </div>
+
+            <!-- ФИЛЬТР ЦЕНЫ -->
+            <form method="GET" class="catalog__price-filter">
+
+                <input type="number"
+                       name="min_price"
+                       placeholder="От"
+                       value="{{ request.GET.min_price }}"
+                       class="price-input">
+
+                <input type="number"
+                       name="max_price"
+                       placeholder="До"
+                       value="{{ request.GET.max_price }}"
+                       class="price-input">
+
+                <button type="submit" class="btn">OK</button>
+
+                <a href="{% url 'catalog' %}" class="btn">Сброс</a>
+
+            </form>
+
         </div>
 
         {% if request.user.is_authenticated and request.user.is_staff %}
-            <a href="{% url 'add_product' %}" class="btn btn-dark mb-3">
+            <a href="{% url 'add_product' %}" class="btn btn-dark add-product-btn">
                 + Добавить товар
             </a>
         {% endif %}
