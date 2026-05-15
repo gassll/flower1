@@ -17,4 +17,5 @@ urlpatterns = [
 
     # path('dishes/', views.dish_list, name='dish_list'),
     # test
+    # test2
 ]
