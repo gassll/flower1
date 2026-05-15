@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'catalog',
     'users',
+    'image_uploader_widget',
 ]
 
 MIDDLEWARE = [
