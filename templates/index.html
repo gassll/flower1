@@ -28,14 +28,31 @@
 
             <div class="recommend-grid">
                 {% for product in recommended_products %}
-                    <a href="#" class="recommend-card">
+                    <a href="{% url 'product-detail' product.id %}" class="recommend-card">
                         <div class="recommend-card__img-wrap">
                             {% if product.image %}
                                 <img src="{{ product.image.url }}" alt="{{ product.name }}" class="recommend-card__img">
                             {% else %}
                                 <div class="recommend-card__img hero-card__img--empty"></div>
                             {% endif %}
-                            <div class="recommend-card__heart">♡</div>
+                            <form action="{% url 'add_to_favorites' product.id %}"
+                                  method="POST"
+                                  class="favorite-form">
+
+                                {% csrf_token %}
+
+                                <button type="submit"
+                                        class="recommend-card__heart"
+                                        onclick="event.stopPropagation();">
+
+                                    {% if user.is_authenticated and product in user_favorites %}
+                                        ♥
+                                    {% else %}
+                                        ♡
+                                    {% endif %}
+
+                                </button>
+                            </form>
                         </div>
 
                         <div class="recommend-card__meta">
@@ -66,7 +83,7 @@
         {% if categories %}
             <div class="hero-grid">
                 {% for category in categories %}
-                    <a href="/{{ category.slug }}/" class="hero-card">
+                    <a href="{% url 'category_detail' category.slug %}" class="hero-card">
                         {% if category.image %}
                             <img src="{{ category.image.url }}" alt="{{ category.name }}" class="hero-card__img">
                         {% else %}
@@ -91,12 +108,12 @@
 
 
     <section class="hero-banner">
-    <div class="container-fluid p-0">
+        <div class="container-fluid p-0">
 
-        <img src="{% static 'images/index.jpg' %}" alt="Flowerna">
+            <img src="{% static 'images/index.jpg' %}" alt="Flowerna">
 
-    </div>
-</section>
+        </div>
+    </section>
 
 {% endblock %}
 

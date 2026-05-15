@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <h1>Оформление заказа</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label>Имя</label>
+            <input type="text" name="name" required class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label>Телефон</label>
+            <input type="text" name="phone" required class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label>Адрес доставки</label>
+            <input type="text" name="address" required class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label>Комментарий</label>
+            <textarea name="comment" class="form-control"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-dark mt-3">
+            Подтвердить заказ
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

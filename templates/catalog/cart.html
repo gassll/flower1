@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Корзина — Flowerna{% endblock %}
+
+{% block content %}
+
+<section class="catalog">
+
+    <div class="catalog__header">
+        <h1>Корзина</h1>
+        <p>Ваши выбранные букеты</p>
+    </div>
+
+    {% if items %}
+
+        <div class="catalog__grid">
+
+            {% for item in items %}
+                <div class="product-card">
+
+                    <a href="{% url 'product-detail' item.product.id %}" class="product-link">
+
+                        {% if item.product.image %}
+                            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                        {% else %}
+                            <div class="product-card__img--empty"></div>
+                        {% endif %}
+
+                        <div class="product-info">
+                            <h3>{{ item.product.name }}</h3>
+
+                            <p>
+                                {{ item.quantity }} × {{ item.product.price }} ₽
+                            </p>
+
+                        </div>
+
+                    </a>
+
+                    <div class="cart-controls">
+
+                        <form action="{% url 'cart_decrease' item.product.id %}" method="POST">
+                            {% csrf_token %}
+                            <button class="cart-btn">−</button>
+                        </form>
+
+                        <span class="cart-qty">{{ item.quantity }}</span>
+
+                        <form action="{% url 'cart_increase' item.product.id %}" method="POST">
+                            {% csrf_token %}
+                            <button class="cart-btn">+</button>
+                        </form>
+
+                        <form action="{% url 'cart_remove' item.product.id %}" method="POST">
+                            {% csrf_token %}
+                            <button class="cart-remove">Удалить</button>
+                        </form>
+
+                    </div>
+
+                </div>
+            {% endfor %}
+
+        </div>
+
+        <div class="cart-summary">
+
+            <div class="cart-total">
+                Итого: <span>{{ total }} ₽</span>
+            </div>
+
+            <a href="{% url 'checkout' %}" class="btn btn-dark btn-lg">
+                Оформить заказ
+            </a>
+
+        </div>
+
+    {% else %}
+
+        <div style="text-align:center; padding: 60px 0;">
+            <h3>Корзина пуста</h3>
+            <p style="color:#666;">Добавьте товары, чтобы оформить заказ</p>
+            <a href="{% url 'catalog' %}" class="btn" style="margin-top:15px;">
+                Перейти в каталог
+            </a>
+        </div>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}

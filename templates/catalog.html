@@ -33,23 +33,43 @@
         <div class="catalog__grid">
 
             {% for product in products %}
-                <a href="{% url 'product-detail' product.id %}" class="product-link">
-                    <div class="product-card">
+
+                <div class="product-card">
+
+                    <form action="{% url 'add_to_favorites' product.id %}"
+                          method="POST"
+                          class="favorite-form">
+
+                        {% csrf_token %}
+
+                        <button type="submit" class="product-card__heart">
+
+                            {% if user.is_authenticated and product in user_favorites %}
+                                ♥
+                            {% else %}
+                                ♡
+                            {% endif %}
+
+                        </button>
+                    </form>
+
+                    <a href="{% url 'product-detail' product.id %}" class="product-link">
+
                         {% if product.image %}
                             <img src="{{ product.image.url }}" alt="{{ product.name }}">
                         {% else %}
                             <div class="product-card__img--empty"></div>
                         {% endif %}
+
                         <div class="product-info">
                             <h3>{{ product.name }}</h3>
                             <p>от {{ product.price }} ₽</p>
                         </div>
-                    </div>
-                </a>
-            {% empty %}
-                <div class="catalog__empty">
-                    <p>Товаров в этой категории пока нет</p>
+
+                    </a>
+
                 </div>
+
             {% endfor %}
 
         </div>

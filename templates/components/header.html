@@ -33,16 +33,16 @@
 
         <div class="header__icons">
 
-            <a href="#" class="icon-btn">
+            <div class="icon-btn" onclick="openSearch()">
                 <img src="{% static 'icons/proicons_search.svg' %}" alt="search">
-            </a>
+            </div>
 
-            <a href="#" class="icon-btn">
+            <a href="{% url 'favorites' %}" class="icon-btn">
                 <img src="{% static 'icons/si_heart-line.svg' %}" alt="favorites">
             </a>
 
-            <a href="#" class="icon-btn">
-                <img src="{% static 'icons/bag.svg' %}" alt="bag">
+            <a href="{% url 'cart' %}" class="icon-btn">
+                <img src="{% static 'icons/bag.svg' %}">
             </a>
 
             <a href="{% url 'register' %}" class="icon-btn">
@@ -53,4 +53,71 @@
 
     </div>
 
+
+    <div id="searchModal" class="search-modal">
+
+        <div class="search-box">
+
+            <form action="{% url 'catalog' %}" method="GET">
+
+                <input type="text" name="q" placeholder="Поиск товаров...">
+
+            </form>
+
+            <span class="close" onclick="closeSearch()">✕</span>
+
+        </div>
+
+    </div>
 </header>
+
+<style>
+    .search-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        display: none;
+        justify-content: center;
+        align-items: flex-start;
+        padding-top: 120px;
+        z-index: 9999;
+    }
+
+    .search-box {
+        background: white;
+        width: 600px;
+        padding: 20px;
+        border-radius: 12px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .search-box input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        outline: none;
+    }
+
+    .close {
+        cursor: pointer;
+        font-size: 20px;
+    }
+
+    .icon-btn,
+    .search-icon {
+        cursor: pointer;
+    }
+</style>
+
+<script>
+    function openSearch() {
+        document.getElementById('searchModal').style.display = 'flex';
+    }
+
+    function closeSearch() {
+        document.getElementById('searchModal').style.display = 'none';
+    }
+</script>
