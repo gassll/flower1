@@ -16,6 +16,4 @@ urlpatterns = [
     path('politika-konfidentsialnosti/', views.politika_konfidentsialnosti, name='politika-konfidentsialnosti'),
 
     # path('dishes/', views.dish_list, name='dish_list'),
-    # test
-    # test2
 ]
