@@ -3,30 +3,6 @@ from slugify import slugify
 from autoslug import AutoSlugField
 from django.conf import settings
 
-
-# class Category(models.Model):
-#     id = models.AutoField(primary_key=True)
-#     name = models.CharField(max_length=255)
-#     description = models.TextField(null=True, blank=True)
-#     image = models.ImageField(upload_to='categories/', null=True, blank=True, verbose_name='Изображение')
-#     slug = AutoSlugField(
-#         populate_from='name',
-#         unique=True,
-#         null=True,
-#         blank=True,
-#         always_update=True,
-#     )
-#
-#
-#     is_featured = models.BooleanField(default=False)
-#
-#
-#     def __str__(self):
-#         return self.name
-#
-#     class Meta:
-#         verbose_name = 'Категория'
-#         verbose_name_plural = 'Категории'
 class Category(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
