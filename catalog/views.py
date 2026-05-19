@@ -9,8 +9,9 @@ from django.contrib.auth.decorators import login_required
 
 
 def my_view(request):
-    categories = Category.objects.filter(is_featured=True)
+    categories = Category.objects.filter(is_featured=True).order_by('name')
     recommended_products = Product.objects.filter(is_recommended=True)
+
     user_favorites = []
 
     if request.user.is_authenticated:
@@ -21,7 +22,6 @@ def my_view(request):
     return render(request, 'index.html', {
         'categories': categories,
         'recommended_products': recommended_products,
-        'cart_count': get_cart_count(request.user),
         'user_favorites': user_favorites,
     })
 
@@ -29,93 +29,42 @@ def my_view(request):
 def catalog(request):
     categories = Category.objects.all().order_by('name')
 
-    query = (request.GET.get('q') or '').strip()
+    category_id = request.GET.get('category')
     min_price = request.GET.get('min_price')
     max_price = request.GET.get('max_price')
 
-    products = Product.objects.filter(
-        is_available=True
-    ).select_related('category')
+    products = Product.objects.filter(is_available=True).select_related('category')
 
-    # Валидация минимальной цены
+    # категория
+    if category_id:
+        products = products.filter(category_id=category_id)
+
+    # цена
     if min_price:
         try:
-            min_price = int(min_price)
-            if min_price < 1:
-                min_price = 1  # Принудительно устанавливаем 1, если ввели меньше
+            products = products.filter(price__gte=int(min_price))
         except ValueError:
-            min_price = None
+            pass
 
-    # Валидация максимальной цены
     if max_price:
         try:
-            max_price = int(max_price)
-            if max_price < 0:
-                max_price = None
+            products = products.filter(price__lte=int(max_price))
         except ValueError:
-            max_price = None
-
-    # Применяем фильтры
-    if min_price:
-        products = products.filter(price__gte=min_price)
-    if max_price:
-        products = products.filter(price__lte=max_price)
+            pass
 
     user_favorites = []
-
     if request.user.is_authenticated:
-        user_favorites = [
-            fav.product for fav in Favorite.objects.filter(user=request.user)
-        ]
-
-    # Применяем поиск
-    if query:
-        query = query.strip().lower()
-        products = [
-            p for p in products
-            if query in p.name.lower()
-               or (p.description and query in p.description.lower())
-               or (p.category and query in p.category.name.lower())
-        ]
+        user_favorites = [f.product for f in Favorite.objects.filter(user=request.user)]
 
     return render(request, 'catalog.html', {
         'categories': categories,
         'products': products,
-        'category_slug': None,
-        'query': query,
-        'user_favorites': user_favorites,
+        'category_id': category_id,
         'min_price': min_price,
         'max_price': max_price,
-    })
-
-
-def category_detail(request, slug):
-    categories = Category.objects.all().order_by('name')
-
-    selected_category = get_object_or_404(
-        Category,
-        slug=slug
-    )
-
-    products = Product.objects.filter(
-        category=selected_category,
-        is_available=True
-    )
-
-    user_favorites = []
-
-    if request.user.is_authenticated:
-        user_favorites = [
-            fav.product for fav in Favorite.objects.filter(user=request.user)
-        ]
-
-    return render(request, 'catalog.html', {
-        'categories': categories,
-        'products': products,
-        'category_slug': slug,
-        'cart_count': get_cart_count(request.user),
         'user_favorites': user_favorites,
     })
+
 
 
 def is_admin(user):

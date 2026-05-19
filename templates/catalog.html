@@ -16,13 +16,13 @@
             <div class="catalog__categories">
 
                 <a href="{% url 'catalog' %}"
-                   class="btn {% if not category_slug %}active{% endif %}">
+                   class="btn {% if not category_id %}active{% endif %}">
                     Все
                 </a>
 
                 {% for category in categories %}
-                    <a href="{% url 'category_detail' category.slug %}"
-                       class="btn {% if category_slug == category.slug %}active{% endif %}">
+                    <a href="{% url 'catalog' %}?category={{ category.id }}"
+                       class="btn {% if category_id == category.id|stringformat:'s' %}active{% endif %}">
                         {{ category.name }}
                     </a>
                 {% endfor %}
@@ -87,11 +87,13 @@
 
                         <a href="{% url 'product-detail' product.id %}" class="product-link">
 
-                            {% if product.image %}
-                                <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                            {% else %}
-                                <div class="product-card__img--empty"></div>
-                            {% endif %}
+                            <div class="product-image">
+                                {% if product.image %}
+                                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                                {% else %}
+                                    <div class="product-card__img--empty"></div>
+                                {% endif %}
+                            </div>
 
                             <div class="product-info">
                                 <h3>{{ product.name }}</h3>

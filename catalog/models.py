@@ -1,32 +1,56 @@
 from django.db import models
-from django.utils.text import slugify
+from slugify import slugify
 from autoslug import AutoSlugField
 from django.conf import settings
 
 
+# class Category(models.Model):
+#     id = models.AutoField(primary_key=True)
+#     name = models.CharField(max_length=255)
+#     description = models.TextField(null=True, blank=True)
+#     image = models.ImageField(upload_to='categories/', null=True, blank=True, verbose_name='Изображение')
+#     slug = AutoSlugField(
+#         populate_from='name',
+#         unique=True,
+#         null=True,
+#         blank=True,
+#         always_update=True,
+#     )
+#
+#
+#     is_featured = models.BooleanField(default=False)
+#
+#
+#     def __str__(self):
+#         return self.name
+#
+#     class Meta:
+#         verbose_name = 'Категория'
+#         verbose_name_plural = 'Категории'
 class Category(models.Model):
-    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
-    image = models.ImageField(upload_to='categories/', null=True, blank=True, verbose_name='Изображение')
-    slug = AutoSlugField(
-        populate_from='name',
-        unique=True,
-        null=True,
-        blank=True,
-        always_update=True,
-    )
-
+    image = models.ImageField(upload_to='categories/', blank=True)
+    slug = models.SlugField(unique=True, blank=True)
 
     is_featured = models.BooleanField(default=False)
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(self.name)
+            slug = base_slug
+            counter = 1
+
+            while Category.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+
+            self.slug = slug
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
-
-    class Meta:
-        verbose_name = 'Категория'
-        verbose_name_plural = 'Категории'
 
 
 class Product(models.Model):

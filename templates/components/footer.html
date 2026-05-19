@@ -12,9 +12,13 @@
 
         <div class="footer__col">
             <div class="footer__title">КАТАЛОГ</div>
+
             {% for category in footer_categories %}
-                <a href="{% url 'category_detail' category.slug %}">{{ category.name }}</a>
+                <a href="{% url 'catalog' %}?category={{ category.id }}">
+                    {{ category.name }}
+                </a>
             {% endfor %}
+
         </div>
 
         <div class="footer__col">

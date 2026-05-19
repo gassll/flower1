@@ -1,11 +1,12 @@
-# catalog/management/commands/fill_db.py
 import random
 import os
 import shutil
+
 from django.core.management.base import BaseCommand
 from django.core.files import File
 from django.conf import settings
 from django.utils.text import slugify
+
 from faker import Faker
 
 from catalog.models import Category, Product
@@ -17,158 +18,292 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         fake = Faker('ru_RU')
 
+        # -----------------------------
         # Очищаем базу
+        # -----------------------------
         self.stdout.write('Очищаем базу данных...')
+
         Product.objects.all().delete()
         Category.objects.all().delete()
 
-        # Очищаем медиа папку
+        # -----------------------------
+        # Очищаем media
+        # -----------------------------
         self.clear_media_folder()
 
-        # Получаем все изображения из папок
+        # -----------------------------
+        # Получаем изображения
+        # -----------------------------
         product_images = self.get_images_from_folder('images')
         icon_images = self.get_images_from_folder('icons')
 
         self.stdout.write(f'Найдено изображений товаров: {len(product_images)}')
         self.stdout.write(f'Найдено иконок: {len(icon_images)}')
 
-        # Создаем категории
+        # -----------------------------
+        # Категории
+        # -----------------------------
         category_names = [
-            'Розы', 'Тюльпаны', 'Пионы', 'Хризантемы', 'Лилии',
-            'Орхидеи', 'Свадебные букеты', 'Композиции в корзинах',
-            'Цветы в горшках', 'Сухоцветы'
+            'Розы',
+            'Тюльпаны',
+            'Пионы',
+            'Хризантемы',
+            'Лилии',
+            'Орхидеи',
+            'Свадебные букеты',
+            'Композиции в корзинах',
+            'Цветы в горшках',
+            'Сухоцветы',
+            'Вазы',
+            'Корзины цветов',
+            'Авторские букеты'
         ]
 
         categories = []
-        for name in category_names:
-            category = Category(name=name)
-            category.save()
 
-            # Для категорий используем иконки (если есть)
+        for name in category_names:
+            category = Category.objects.create(name=name)
+
+            # Добавляем иконку
             if icon_images:
                 random_icon = random.choice(icon_images)
                 self.add_image_to_object(category, random_icon, 'icons')
-            elif product_images:
-                # Если иконок нет, используем обычные изображения
-                random_image = random.choice(product_images)
-                self.add_image_to_object(category, random_image, 'images')
 
             categories.append(category)
-            self.stdout.write(f'Создана категория: {name}')
 
-        # Названия товаров
-        product_names = [
-            'Классический букет роз', 'Нежность пионов', 'Солнечные тюльпаны',
-            'Белая лилия', 'Весеннее настроение', 'Алая страсть', 'Невеста',
-            'Цветочная симфония', 'Розовое облако', 'Сиреневый рай',
-            'Осенний вальс', 'Зимняя сказка', 'Экзотическая орхидея',
-            'Полевые цветы', 'Корзина счастья', 'Лавандовое настроение',
-            'Букет невесты', 'Дыхание весны', 'Царская лилия', 'Премиум букет',
-            'Минимализм', 'Яркий акцент', 'Нежный рассвет', 'Вечерняя романтика',
-            'Прованс', 'Розовая мечта', 'Сиреневое облако', 'Золотая осень',
-            'Белоснежная чистота', 'Королевский букет'
-        ]
+            self.stdout.write(f'✓ Создана категория: {name}')
 
+        # -----------------------------
         # Описания
+        # -----------------------------
         descriptions = [
-            'Изысканный букет из свежих цветов, собранный вручную нашими флористами',
-            'Нежные цветы в элегантной упаковке, подарят радость и хорошее настроение',
-            'Шикарная композиция для особого случая или просто так',
-            'Свежайшие цветы с доставкой по городу',
-            'Эффектный букет, который точно запомнится',
-            'Стильная композиция в современном стиле',
-            'Классический букет для любимых и близких',
-            'Роскошная композиция с дополнительным декором',
-            'Букет с доставкой день в день',
-            'Авторская работа наших флористов',
-            'Эксклюзивный букет от ведущих флористов',
-            'Невероятно красивая композиция для особого дня'
+            'Изысканный букет из свежих цветов',
+            'Нежная композиция ручной работы',
+            'Авторский букет от флориста',
+            'Свежие цветы с доставкой',
+            'Роскошная композиция для особого случая',
+            'Стильный букет в современном оформлении',
+            'Элегантная композиция в пастельных оттенках',
+            'Премиальный букет из отборных цветов'
         ]
 
+        # -----------------------------
+        # Товары по категориям
+        # -----------------------------
+        products_by_category = {
+            'Вазы': [
+                'Ваза v.125',
+                'Ваза v.116',
+                'Ваза v.124',
+                'Ваза v.120',
+                'Ваза v.106'
+            ],
+
+            'Корзины цветов': [
+                'Корзина "PINK PUNK"',
+                'Корзина ароматной сирени',
+                'Корзина "Лимонад с ревенем"',
+                'Корзина ромашек'
+            ],
+
+            'Пионы': [
+                'Нежность пионов',
+                'Розовое облако',
+                'Нежный рассвет'
+            ],
+
+            'Авторские букеты': [
+                'Авторский букет "Мираж"',
+                'Авторский букет "Летняя прохлада"',
+                'Садовый букет "Лимонад с ревенем"'
+            ],
+
+            'Лилии': [
+                'Белая лилия',
+                'Царская лилия',
+                'Лунный свет'
+            ],
+
+            'Орхидеи': [
+                'Экзотическая орхидея',
+                'Тропическая мечта'
+            ],
+
+            'Свадебные букеты': [
+                'Букет невесты',
+                'Свадебная гармония'
+            ],
+
+            'Композиции в корзинах': [
+                'Корзина счастья',
+                'Цветочная симфония',
+                'Праздничная корзина'
+            ],
+
+            'Цветы в горшках': [
+                'Домашняя орхидея',
+                'Зеленый уют'
+            ],
+
+            'Сухоцветы': [
+                'Лавандовое настроение',
+                'Прованс',
+                'Сиреневое облако'
+            ]
+        }
+
+        # -----------------------------
         # Создаем товары
+        # -----------------------------
         self.stdout.write('\nСоздаем товары...')
+
         products_created = 0
 
-        for i in range(50):  # Создаем 50 товаров
-            price = random.randint(500, 15000)
-            price = round(price / 50) * 50
+        for category_name, product_list in products_by_category.items():
 
-            name = random.choice(product_names)
-            if Product.objects.filter(name=name).exists():
-                name = f"{name} {i + 1}"
+            category = Category.objects.get(name=category_name)
 
-            product = Product(
-                category=random.choice(categories),
-                name=name,
-                description=random.choice(descriptions) + '. ' + fake.text(max_nb_chars=150),
-                price=price,
-                is_available=random.choice([True, True, True, True, False]),
-                is_recommended=random.choice([True, False])
-            )
-            product.save()
+            for product_name in product_list:
 
-            # Для товаров используем изображения из папки images
-            if product_images:
-                random_image = random.choice(product_images)
-                self.add_image_to_object(product, random_image, 'images')
+                price = random.randint(1000, 15000)
+                price = round(price / 50) * 50
 
-            products_created += 1
+                product = Product.objects.create(
+                    category=category,
+                    name=product_name,
+                    description=(
+                            random.choice(descriptions)
+                            + '. '
+                            + fake.text(max_nb_chars=120)
+                    ),
+                    price=price,
+                    is_available=random.choice([True, True, True, False]),
+                    is_recommended=random.choice([True, False])
+                )
 
-            if products_created % 10 == 0:
-                self.stdout.write(f'   Создано товаров: {products_created}')
+                # Добавляем изображение
+                if product_images:
+                    random_image = random.choice(product_images)
+                    self.add_image_to_object(product, random_image, 'images')
 
-        self.stdout.write(self.style.SUCCESS(f'\n✓ База данных успешно заполнена!'))
-        self.stdout.write(self.style.SUCCESS(f'✓ Категорий: {len(categories)}'))
-        self.stdout.write(self.style.SUCCESS(f'✓ Товаров: {products_created}'))
+                products_created += 1
+
+                self.stdout.write(f'   ✓ {product_name}')
+
+        # -----------------------------
+        # Итог
+        # -----------------------------
         self.stdout.write(
-            self.style.SUCCESS(f'✓ Использовано изображений товаров: {min(len(product_images), products_created)}'))
-        self.stdout.write(self.style.SUCCESS(f'✓ Использовано иконок: {min(len(icon_images), len(categories))}'))
+            self.style.SUCCESS('\n✓ База данных успешно заполнена!')
+        )
 
+        self.stdout.write(
+            self.style.SUCCESS(f'✓ Категорий: {len(categories)}')
+        )
+
+        self.stdout.write(
+            self.style.SUCCESS(f'✓ Товаров: {products_created}')
+        )
+
+    # =========================================================
+    # Получение изображений
+    # =========================================================
     def get_images_from_folder(self, subfolder):
-        """Получает список всех изображений из указанной подпапки media_seed"""
+
         images = []
-        seed_dir = os.path.join(settings.BASE_DIR, 'media_seed', subfolder)
+
+        seed_dir = os.path.join(
+            settings.BASE_DIR,
+            'media_seed',
+            subfolder
+        )
 
         if os.path.exists(seed_dir):
+
             for file in os.listdir(seed_dir):
-                if file.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg')):
+
+                if file.lower().endswith(
+                        ('.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg')
+                ):
                     images.append(file)
-            self.stdout.write(f'   Найдено {len(images)} файлов в {subfolder}')
+
+            self.stdout.write(
+                f'   Найдено {len(images)} файлов в {subfolder}'
+            )
+
         else:
-            self.stdout.write(self.style.WARNING(f'   Папка не найдена: {seed_dir}'))
+            self.stdout.write(
+                self.style.WARNING(f'Папка не найдена: {seed_dir}')
+            )
 
         return images
 
+    # =========================================================
+    # Добавление изображения
+    # =========================================================
     def add_image_to_object(self, obj, image_filename, subfolder='images'):
-        """Добавляет изображение к объекту модели"""
-        source_path = os.path.join(settings.BASE_DIR, 'media_seed', subfolder, image_filename)
+
+        source_path = os.path.join(
+            settings.BASE_DIR,
+            'media_seed',
+            subfolder,
+            image_filename
+        )
 
         if os.path.exists(source_path):
+
             try:
-                # Генерируем уникальное имя файла
                 extension = os.path.splitext(image_filename)[1]
-                unique_filename = f"{slugify(obj.name)}_{random.randint(1000, 9999)}{extension}"
+
+                unique_filename = (
+                    f"{slugify(obj.name)}_"
+                    f"{random.randint(1000, 9999)}"
+                    f"{extension}"
+                )
 
                 with open(source_path, 'rb') as f:
+
                     django_file = File(f, name=unique_filename)
-                    obj.image.save(unique_filename, django_file, save=True)
-                self.stdout.write(f'     ✓ Загружено: {image_filename} -> {obj.name}')
+
+                    obj.image.save(
+                        unique_filename,
+                        django_file,
+                        save=True
+                    )
+
                 return True
+
             except Exception as e:
-                self.stdout.write(self.style.WARNING(f'     ✗ Ошибка загрузки {image_filename}: {e}'))
-        else:
-            self.stdout.write(self.style.WARNING(f'     ✗ Файл не найден: {source_path}'))
+
+                self.stdout.write(
+                    self.style.WARNING(
+                        f'Ошибка загрузки {image_filename}: {e}'
+                    )
+                )
 
         return False
 
+    # =========================================================
+    # Очистка media
+    # =========================================================
     def clear_media_folder(self):
+
         media_path = os.path.join(settings.BASE_DIR, 'media')
+
         if os.path.exists(media_path):
+
             try:
                 shutil.rmtree(media_path)
-                self.stdout.write('Папка media очищена')
-            except Exception as e:
-                self.stdout.write(self.style.WARNING(f'Не удалось очистить media: {e}'))
+                self.stdout.write('✓ Папка media очищена')
 
-        # Создаем папку media заново
+            except Exception as e:
+
+                self.stdout.write(
+                    self.style.WARNING(
+                        f'Не удалось очистить media: {e}'
+                    )
+                )
+
         os.makedirs(media_path, exist_ok=True)
+
+
