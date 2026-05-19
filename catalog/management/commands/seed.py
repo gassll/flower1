@@ -1,5 +1,5 @@
-import random
 import os
+import random
 import shutil
 
 from django.core.management.base import BaseCommand
@@ -13,297 +13,159 @@ from catalog.models import Category, Product
 
 
 class Command(BaseCommand):
-    help = 'Заполнение базы данных цветочного магазина тестовыми данными'
+    help = "Stable production seed (safe + deterministic image mapping)"
 
+    # =========================
+    # DATA (товар → картинка)
+    # =========================
+    DATA = {
+        "Вазы": [
+            ("Ваза v.120", "vases/vase1.jpg"),
+            ("Ваза v.101", "vases/vase2.jpg"),
+            ("Ваза v.106", "vases/vase3.webp"),
+            ("Ваза v.120", "vases/vase4.jpg"),
+            ("Ваза v.122", "vases/vase5.jpg"),
+            ("Ваза v.125", "vases/vase6.webp"),
+        ],
+
+        "Корзины цветов": [
+            ("Корзина ароматной сирени", "baskets/baskets1.webp"),
+            ("Корзина PINK PUNK", "baskets/baskets2.webp"),
+            ("Корзина Лимонад с ревенем", "baskets/baskets3.webp"),
+        ],
+
+        "Цветы в коробке": [
+            ("Шляпная коробка «Лимончелло»", "boxes/box1.webp"),
+            ("Шляпная коробка «Монпансье»", "boxes/box2.webp"),
+            ("Шляпная коробка «Нежные чувства»", "boxes/box3.jpg"),
+            ("Шляпная коробка «Розовая матча»", "boxes/box4.webp"),
+        ],
+
+        "Авторские букеты": [
+            ("Авторский букет «Летняя прохлада»", "bouquets/bouquets1.webp"),
+            ("Садовый  букет «Лимонад с ревенем»", "bouquets/bouquets2.webp"),
+            ("Садовый букет «Мохито»", "bouquets/bouquets3.webp"),
+            ("Авторский букет «Кьянти»", "bouquets/bouquets4.webp"),
+            ("Авторский букет «Арбузный смузи»", "bouquets/bouquets5.webp"),
+        ],
+
+        "Моно дуо трио букеты": [
+            ("Пионовидные розы «Джентл Трендсеттер»", "mono_duo_trio/mono_duo_trio1.webp"),
+            ("Трио-букет «Новая Антуанетта»", "mono_duo_trio/mono_duo_trio2.webp"),
+            ("Белая кустовая маттиола", "mono_duo_trio/mono_duo_trio3.webp"),
+            ("Дуо-букет «Мандарин и оксипеталум»", "mono_duo_trio/mono_duo_trio4.webp"),
+        ],
+
+        "Свадебные букеты": [
+            ("Букет невесты LOV 73", "wedding/wed1.webp"),
+            ("Букет невесты LOV 98", "wedding/wed2.webp"),
+            ("Букет невесты LOV 85", "wedding/wed3.webp"),
+        ],
+    }
+
+    # =========================
+    # MAIN
+    # =========================
     def handle(self, *args, **kwargs):
-        fake = Faker('ru_RU')
+        self.fake = Faker("ru_RU")
 
-        # -----------------------------
-        # Очищаем базу
-        # -----------------------------
-        self.stdout.write('Очищаем базу данных...')
+        self.reset()
+        self.create_categories()
+        self.create_products()
+
+        self.stdout.write(self.style.SUCCESS("✅ SEED DONE"))
+
+    # =========================
+    # RESET SAFE
+    # =========================
+    def reset(self):
+        self.stdout.write("🧹 Reset...")
 
         Product.objects.all().delete()
         Category.objects.all().delete()
 
-        # -----------------------------
-        # Очищаем media
-        # -----------------------------
-        self.clear_media_folder()
+        media_path = os.path.join(settings.BASE_DIR, "media")
+        if os.path.exists(media_path):
+            shutil.rmtree(media_path)
 
-        # -----------------------------
-        # Получаем изображения
-        # -----------------------------
-        product_images = self.get_images_from_folder('images')
-        icon_images = self.get_images_from_folder('icons')
+        os.makedirs(media_path, exist_ok=True)
 
-        self.stdout.write(f'Найдено изображений товаров: {len(product_images)}')
-        self.stdout.write(f'Найдено иконок: {len(icon_images)}')
+    # =========================
+    # CATEGORIES (SAFE CACHE)
+    # =========================
+    def create_categories(self):
+        self.stdout.write("🌸 Creating categories...")
 
-        # -----------------------------
-        # Категории
-        # -----------------------------
-        category_names = [
-            'Розы',
-            'Тюльпаны',
-            'Пионы',
-            'Хризантемы',
-            'Лилии',
-            'Орхидеи',
-            'Свадебные букеты',
-            'Композиции в корзинах',
-            'Цветы в горшках',
-            'Сухоцветы',
-            'Вазы',
-            'Корзины цветов',
-            'Авторские букеты'
-        ]
+        self.categories = {}
 
-        categories = []
+        for name in self.DATA.keys():
+            obj, _ = Category.objects.get_or_create(
+                name=name,
+                defaults={"slug": slugify(name)}
+            )
 
-        for name in category_names:
-            category = Category.objects.create(name=name)
+            self.categories[name] = obj
+            self.stdout.write(f"✔ {name}")
 
-            # Добавляем иконку
-            if icon_images:
-                random_icon = random.choice(icon_images)
-                self.add_image_to_object(category, random_icon, 'icons')
+    # =========================
+    # PRODUCTS
+    # =========================
+    def create_products(self):
+        self.stdout.write("🌷 Creating products...")
 
-            categories.append(category)
+        for category_name, products in self.DATA.items():
 
-            self.stdout.write(f'✓ Создана категория: {name}')
+            category = self.categories[category_name]
 
-        # -----------------------------
-        # Описания
-        # -----------------------------
-        descriptions = [
-            'Изысканный букет из свежих цветов',
-            'Нежная композиция ручной работы',
-            'Авторский букет от флориста',
-            'Свежие цветы с доставкой',
-            'Роскошная композиция для особого случая',
-            'Стильный букет в современном оформлении',
-            'Элегантная композиция в пастельных оттенках',
-            'Премиальный букет из отборных цветов'
-        ]
-
-        # -----------------------------
-        # Товары по категориям
-        # -----------------------------
-        products_by_category = {
-            'Вазы': [
-                'Ваза v.125',
-                'Ваза v.116',
-                'Ваза v.124',
-                'Ваза v.120',
-                'Ваза v.106'
-            ],
-
-            'Корзины цветов': [
-                'Корзина "PINK PUNK"',
-                'Корзина ароматной сирени',
-                'Корзина "Лимонад с ревенем"',
-                'Корзина ромашек'
-            ],
-
-            'Пионы': [
-                'Нежность пионов',
-                'Розовое облако',
-                'Нежный рассвет'
-            ],
-
-            'Авторские букеты': [
-                'Авторский букет "Мираж"',
-                'Авторский букет "Летняя прохлада"',
-                'Садовый букет "Лимонад с ревенем"'
-            ],
-
-            'Лилии': [
-                'Белая лилия',
-                'Царская лилия',
-                'Лунный свет'
-            ],
-
-            'Орхидеи': [
-                'Экзотическая орхидея',
-                'Тропическая мечта'
-            ],
-
-            'Свадебные букеты': [
-                'Букет невесты',
-                'Свадебная гармония'
-            ],
-
-            'Композиции в корзинах': [
-                'Корзина счастья',
-                'Цветочная симфония',
-                'Праздничная корзина'
-            ],
-
-            'Цветы в горшках': [
-                'Домашняя орхидея',
-                'Зеленый уют'
-            ],
-
-            'Сухоцветы': [
-                'Лавандовое настроение',
-                'Прованс',
-                'Сиреневое облако'
-            ]
-        }
-
-        # -----------------------------
-        # Создаем товары
-        # -----------------------------
-        self.stdout.write('\nСоздаем товары...')
-
-        products_created = 0
-
-        for category_name, product_list in products_by_category.items():
-
-            category = Category.objects.get(name=category_name)
-
-            for product_name in product_list:
-
-                price = random.randint(1000, 15000)
-                price = round(price / 50) * 50
+            for product_name, image_path in products:
 
                 product = Product.objects.create(
                     category=category,
                     name=product_name,
-                    description=(
-                            random.choice(descriptions)
-                            + '. '
-                            + fake.text(max_nb_chars=120)
-                    ),
-                    price=price,
-                    is_available=random.choice([True, True, True, False]),
-                    is_recommended=random.choice([True, False])
+                    description=self.fake.text(120),
+                    price=self.random_price(),
+                    is_available=True,
+                    is_recommended=False,
                 )
 
-                # Добавляем изображение
-                if product_images:
-                    random_image = random.choice(product_images)
-                    self.add_image_to_object(product, random_image, 'images')
+                self.attach_image(product, image_path)
 
-                products_created += 1
+                self.stdout.write(f"   ✓ {product_name}")
 
-                self.stdout.write(f'   ✓ {product_name}')
+    # =========================
+    # IMAGE ATTACH
+    # =========================
+    def attach_image(self, obj, relative_path):
 
-        # -----------------------------
-        # Итог
-        # -----------------------------
-        self.stdout.write(
-            self.style.SUCCESS('\n✓ База данных успешно заполнена!')
-        )
-
-        self.stdout.write(
-            self.style.SUCCESS(f'✓ Категорий: {len(categories)}')
-        )
-
-        self.stdout.write(
-            self.style.SUCCESS(f'✓ Товаров: {products_created}')
-        )
-
-    # =========================================================
-    # Получение изображений
-    # =========================================================
-    def get_images_from_folder(self, subfolder):
-
-        images = []
-
-        seed_dir = os.path.join(
+        full_path = os.path.join(
             settings.BASE_DIR,
-            'media_seed',
-            subfolder
+            "media_seed",
+            relative_path
         )
 
-        if os.path.exists(seed_dir):
+        if not os.path.exists(full_path):
+            self.stdout.write(f"⚠ missing image: {relative_path}")
+            return
 
-            for file in os.listdir(seed_dir):
-
-                if file.lower().endswith(
-                        ('.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg')
-                ):
-                    images.append(file)
-
-            self.stdout.write(
-                f'   Найдено {len(images)} файлов в {subfolder}'
-            )
-
-        else:
-            self.stdout.write(
-                self.style.WARNING(f'Папка не найдена: {seed_dir}')
-            )
-
-        return images
-
-    # =========================================================
-    # Добавление изображения
-    # =========================================================
-    def add_image_to_object(self, obj, image_filename, subfolder='images'):
-
-        source_path = os.path.join(
-            settings.BASE_DIR,
-            'media_seed',
-            subfolder,
-            image_filename
-        )
-
-        if os.path.exists(source_path):
-
-            try:
-                extension = os.path.splitext(image_filename)[1]
-
-                unique_filename = (
-                    f"{slugify(obj.name)}_"
-                    f"{random.randint(1000, 9999)}"
-                    f"{extension}"
+        try:
+            with open(full_path, "rb") as f:
+                obj.image.save(
+                    self.unique_name(full_path),
+                    File(f),
+                    save=True
                 )
+        except Exception as e:
+            self.stdout.write(f"⚠ image error: {e}")
 
-                with open(source_path, 'rb') as f:
+    # =========================
+    # UNIQUE FILE NAME
+    # =========================
+    def unique_name(self, path):
+        import uuid
+        return f"{uuid.uuid4().hex}_{os.path.basename(path)}"
 
-                    django_file = File(f, name=unique_filename)
-
-                    obj.image.save(
-                        unique_filename,
-                        django_file,
-                        save=True
-                    )
-
-                return True
-
-            except Exception as e:
-
-                self.stdout.write(
-                    self.style.WARNING(
-                        f'Ошибка загрузки {image_filename}: {e}'
-                    )
-                )
-
-        return False
-
-    # =========================================================
-    # Очистка media
-    # =========================================================
-    def clear_media_folder(self):
-
-        media_path = os.path.join(settings.BASE_DIR, 'media')
-
-        if os.path.exists(media_path):
-
-            try:
-                shutil.rmtree(media_path)
-                self.stdout.write('✓ Папка media очищена')
-
-            except Exception as e:
-
-                self.stdout.write(
-                    self.style.WARNING(
-                        f'Не удалось очистить media: {e}'
-                    )
-                )
-
-        os.makedirs(media_path, exist_ok=True)
-
-
+    # =========================
+    # PRICE
+    # =========================
+    def random_price(self):
+        return round(random.randint(1000, 20000) / 50) * 50
