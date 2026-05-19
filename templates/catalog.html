@@ -35,14 +35,16 @@
                 <input type="number"
                        name="min_price"
                        placeholder="От"
-                       value="{{ request.GET.min_price }}"
-                       class="price-input">
+                       value="{% if min_price %}{{ min_price }}{% else %}{{ request.GET.min_price }}{% endif %}"
+                       class="price-input"
+                       min="1">
 
                 <input type="number"
                        name="max_price"
                        placeholder="До"
-                       value="{{ request.GET.max_price }}"
-                       class="price-input">
+                       value="{% if max_price %}{{ max_price }}{% else %}{{ request.GET.max_price }}{% endif %}"
+                       class="price-input"
+                       min="1">
 
                 <button type="submit" class="btn">OK</button>
 
@@ -58,49 +60,69 @@
             </a>
         {% endif %}
 
-        <div class="catalog__grid">
+        <!-- БЛОК С СООБЩЕНИЕМ, ЕСЛИ ТОВАРОВ НЕТ -->
+        {% if products %}
+            <div class="catalog__grid">
 
-            {% for product in products %}
+                {% for product in products %}
 
-                <div class="product-card">
+                    <div class="product-card">
 
-                    <form action="{% url 'add_to_favorites' product.id %}"
-                          method="POST"
-                          class="favorite-form">
+                        <form action="{% url 'add_to_favorites' product.id %}"
+                              method="POST"
+                              class="favorite-form">
 
-                        {% csrf_token %}
+                            {% csrf_token %}
 
-                        <button type="submit" class="product-card__heart">
+                            <button type="submit" class="product-card__heart">
 
-                            {% if user.is_authenticated and product in user_favorites %}
-                                ♥
+                                {% if user.is_authenticated and product in user_favorites %}
+                                    ♥
+                                {% else %}
+                                    ♡
+                                {% endif %}
+
+                            </button>
+                        </form>
+
+                        <a href="{% url 'product-detail' product.id %}" class="product-link">
+
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}">
                             {% else %}
-                                ♡
+                                <div class="product-card__img--empty"></div>
                             {% endif %}
 
-                        </button>
-                    </form>
+                            <div class="product-info">
+                                <h3>{{ product.name }}</h3>
+                                <p>от {{ product.price }} ₽</p>
+                            </div>
 
-                    <a href="{% url 'product-detail' product.id %}" class="product-link">
+                        </a>
 
-                        {% if product.image %}
-                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                        {% else %}
-                            <div class="product-card__img--empty"></div>
-                        {% endif %}
+                    </div>
 
-                        <div class="product-info">
-                            <h3>{{ product.name }}</h3>
-                            <p>от {{ product.price }} ₽</p>
-                        </div>
+                {% endfor %}
 
-                    </a>
+            </div>
+        {% else %}
+            <!-- СООБЩЕНИЕ ОБ ОТСУТСТВИИ ТОВАРОВ -->
+            <div class="catalog__empty">
+                <p>😕 Товаров не найдено</p>
 
-                </div>
+                {% if request.GET.min_price or request.GET.max_price %}
+                    <p>В выбранном ценовом диапазоне товаров нет.</p>
+                    <p>Попробуйте изменить параметры фильтрации.</p>
+                {% elif query %}
+                    <p>По запросу "{{ query }}" ничего не найдено.</p>
+                    <p>Попробуйте изменить поисковый запрос.</p>
+                {% else %}
+                    <p>В данной категории пока нет товаров.</p>
+                {% endif %}
 
-            {% endfor %}
-
-        </div>
+                <a href="{% url 'catalog' %}" class="btn">Сбросить все фильтры</a>
+            </div>
+        {% endif %}
 
     </section>
 
