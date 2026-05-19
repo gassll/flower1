@@ -11,7 +11,7 @@ class CategoryAdmin(admin.ModelAdmin):
     list_filter = ['is_featured']
     list_editable = ['is_featured']
 
-    # ГЛАВНОЕ: переопределяем виджет для ImageField
+
     formfield_overrides = {
         models.ImageField: {'widget': ImageUploaderWidget},
     }
@@ -24,7 +24,7 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ['name']
     list_editable = ['price', 'is_available', 'is_recommended']
 
-    # ГЛАВНОЕ: переопределяем виджет для ImageField
+
     formfield_overrides = {
         models.ImageField: {'widget': ImageUploaderWidget},
     }

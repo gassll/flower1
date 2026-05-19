@@ -12,6 +12,7 @@ class Category(models.Model):
     slug = AutoSlugField(
         populate_from='name',
         unique=True,
+        null=True,
         blank=True,
         always_update=True,
     )
