@@ -413,6 +413,7 @@ body {
     margin-top: 40px;
 }
 
+
 /* ===== КАТАЛОГ ===== */
 
 .catalog {
@@ -505,6 +506,12 @@ body {
 .catalog__empty .btn {
     margin-top: 20px;
     display: inline-block;
+}
+
+.catalog__categories .btn.active {
+    background: #000;
+    color: #fff;
+    border-color: #000;
 }
 
 .add-product-btn {
