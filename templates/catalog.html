@@ -13,15 +13,18 @@
         <div class="catalog__filters-wrapper">
 
             <div class="catalog__categories">
-                <a href="{% url 'catalog' %}{% if min_price or max_price %}?min_price={{ min_price }}&max_price={{ max_price }}{% endif %}"
+                <a href="
+
+                        {% url 'catalog' %}{% if min_price or max_price %}?min_price={{ min_price }}&max_price={{ max_price }}{% endif %}"
                    class="btn{% if not category_id %} active{% endif %}">
                     Все
                 </a>
 
                 {% for category in categories %}
                     <a href="{% url 'catalog' %}?category=
+
                             {{ category.id }}{% if min_price or max_price %}&min_price={{ min_price }}&max_price={{ max_price }}{% endif %}"
-                       class="btn{% if category_id|stringformat:'s' == category.id|stringformat:'s' %} active{% endif %}">
+                       class="btn{% if category_id|add:'0' == category.id %} active{% endif %}">
                         {{ category.name }}
                     </a>
                 {% endfor %}

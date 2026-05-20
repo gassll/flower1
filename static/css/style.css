@@ -508,10 +508,10 @@ body {
     display: inline-block;
 }
 
-.catalog__categories a.btn.active {
-    background: #000;
-    color: #fff;
-    border-color: #000;
+.catalog__categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .catalog__categories a.btn {
@@ -522,9 +522,14 @@ body {
     background: #000 !important;
     color: #fff !important;
     border-color: #000 !important;
-    pointer-events: none;
 }
 
+.catalog .catalog__categories .btn.active,
+.catalog__categories .btn.active {
+    background-color: #000 !important;
+    color: #fff !important;
+    border: 1px solid #000 !important;
+}
 .add-product-btn {
     margin-top: 15px;
     margin-bottom: 20px;

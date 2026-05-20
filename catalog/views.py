@@ -55,6 +55,7 @@ def catalog(request):
     if request.user.is_authenticated:
         user_favorites = [f.product for f in Favorite.objects.filter(user=request.user)]
 
+
     return render(request, 'catalog.html', {
         'categories': categories,
         'products': products,
