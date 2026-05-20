@@ -5,16 +5,21 @@
 
     <section class="catalog">
 
+
         <div class="catalog__header">
-            <h1>{% block catalog_title %}Все цветы{% endblock %}</h1>
-            <p>{% block catalog_subtitle %}Авторские букеты и композиции{% endblock %}</p>
+            {% if query %}
+                <h1>Результаты поиска: "{{ query }}"</h1>
+                <p>Найдено товаров: {{ products|length }}</p>
+            {% else %}
+                <h1>{% block catalog_title %}Все цветы{% endblock %}</h1>
+                <p>{% block catalog_subtitle %}Авторские букеты и композиции{% endblock %}</p>
+            {% endif %}
         </div>
 
         <div class="catalog__filters-wrapper">
 
             <div class="catalog__categories">
                 <a href="
-
                         {% url 'catalog' %}{% if min_price or max_price %}?min_price={{ min_price }}&max_price={{ max_price }}{% endif %}"
                    class="btn{% if not category_id %} active{% endif %}">
                     Все
@@ -22,6 +27,9 @@
 
                 {% for category in categories %}
                     <a href="{% url 'catalog' %}?category=
+
+
+
 
                             {{ category.id }}{% if min_price or max_price %}&min_price={{ min_price }}&max_price={{ max_price }}{% endif %}"
                        class="btn{% if category_id|add:'0' == category.id %} active{% endif %}">
@@ -33,6 +41,10 @@
             <form method="GET" class="catalog__price-filter">
                 {% if category_id %}
                     <input type="hidden" name="category" value="{{ category_id }}">
+                {% endif %}
+
+                {% if query %}
+                    <input type="hidden" name="q" value="{{ query }}">
                 {% endif %}
 
                 <input type="number"
@@ -61,6 +73,10 @@
                 + Добавить товар
             </a>
         {% endif %}
+
+
+        <div style="height: 20px;"></div>
+
 
         <!-- БЛОК С СООБЩЕНИЕМ, ЕСЛИ ТОВАРОВ НЕТ -->
         {% if products %}
@@ -110,7 +126,6 @@
 
             </div>
         {% else %}
-            <!-- СООБЩЕНИЕ ОБ ОТСУТСТВИИ ТОВАРОВ -->
             <div class="catalog__empty">
                 <p>😕 Товаров не найдено</p>
 

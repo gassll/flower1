@@ -10,6 +10,7 @@ from django.contrib import messages
 from django.utils import timezone
 from datetime import datetime
 from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 
 
 def my_view(request):
@@ -36,8 +37,17 @@ def catalog(request):
     category_id = request.GET.get('category')
     min_price = request.GET.get('min_price')
     max_price = request.GET.get('max_price')
+    query = request.GET.get('q', '').strip()
 
     products = Product.objects.filter(is_available=True).select_related('category')
+
+    if query:
+        products = products.filter(
+            Q(name__icontains=query) |
+            Q(name__icontains=query.lower()) |
+            Q(name__icontains=query.upper()) |
+            Q(name__icontains=query.capitalize())
+        )
 
     if category_id:
         products = products.filter(category_id=category_id)
@@ -64,6 +74,7 @@ def catalog(request):
         'category_id': category_id,
         'min_price': min_price,
         'max_price': max_price,
+        'query': query,
         'user_favorites': user_favorites,
         'current_get': request.GET,
     })
