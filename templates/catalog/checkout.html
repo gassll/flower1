@@ -2,56 +2,100 @@
 
 {% block content %}
 
-<div class="container py-5">
+    <div class="container py-5">
 
-    <h1>Оформление заказа</h1>
+        <h1>Оформление заказа</h1>
 
-    <form method="POST" action="{% url 'create_order' %}">
-        {% csrf_token %}
+        <form method="POST" action="{% url 'create_order' %}">
+            {% csrf_token %}
 
-        <div class="form-group mb-3">
-            <label>Имя</label>
-            <input type="text" name="name" required class="form-control">
-        </div>
-
-        <div class="form-group mb-3">
-            <label>Телефон</label>
-            <input type="text" name="phone" required class="form-control">
-        </div>
-
-        <div class="form-group mb-3">
-            <label>Адрес доставки</label>
-            <input type="text" name="address" required class="form-control">
-        </div>
-
-        <div class="form-group mb-3">
-            <label>Комментарий</label>
-            <textarea name="comment" class="form-control" rows="3"></textarea>
-        </div>
-
-        <!-- Выбор способа оплаты -->
-        <div class="form-group mb-4">
-            <label class="fw-bold mb-2">Способ оплаты</label>
-            <div class="form-check mb-2">
-                <input class="form-check-input" type="radio" name="payment_method" id="cash" value="cash" required>
-                <label class="form-check-label" for="cash">
-                    Наличные (при получении)
-                </label>
+            <div class="form-group mb-3">
+                <label>Имя</label>
+                <input type="text" name="name" required class="form-control">
             </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="payment_method" id="card" value="card" required>
-                <label class="form-check-label" for="card">
-                    Банковская карта (онлайн)
-                </label>
+
+            <div class="form-group mb-3">
+                <label>Телефон</label>
+                <input type="text" name="phone" required class="form-control">
             </div>
-        </div>
 
-        <button type="submit" class="btn btn-dark mt-3 px-4 py-2">
-            Подтвердить заказ
-        </button>
+            <div class="form-group mb-3">
+                <label>Адрес доставки</label>
+                <input type="text" name="address" required class="form-control">
+            </div>
 
-    </form>
+            <!-- Дата и время доставки -->
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Дата доставки</label>
+                        <input type="date" name="delivery_date" required class="form-control"
+                               min="{{ today|date:'Y-m-d' }}">
+                        <small class="text-muted">Выберите удобную дату доставки</small>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Время доставки</label>
+                        <select name="delivery_time" required class="form-control">
+                            <option value="">Выберите время</option>
+                            <option value="09:00-11:00">09:00 - 11:00</option>
+                            <option value="11:00-13:00">11:00 - 13:00</option>
+                            <option value="13:00-15:00">13:00 - 15:00</option>
+                            <option value="15:00-17:00">15:00 - 17:00</option>
+                            <option value="17:00-19:00">17:00 - 19:00</option>
+                            <option value="19:00-21:00">19:00 - 21:00</option>
+                        </select>
+                        <small class="text-muted">Выберите удобный интервал времени</small>
+                    </div>
+                </div>
+            </div>
 
-</div>
+            <div class="form-group mb-3">
+                <label>Комментарий</label>
+                <textarea name="comment" class="form-control" rows="3"
+                          placeholder="Особые пожелания по доставке или заказу..."></textarea>
+            </div>
+
+            <!-- Выбор способа оплаты -->
+            <div class="form-group mb-4">
+                <label class="fw-bold mb-2">Способ оплаты</label>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="radio" name="payment_method" id="cash" value="cash" required>
+                    <label class="form-check-label" for="cash">
+                        Наличные (при получении)
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="payment_method" id="card" value="card" required>
+                    <label class="form-check-label" for="card">
+                        Банковская карта (онлайн)
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-dark mt-3 px-4 py-2">
+                Подтвердить заказ
+            </button>
+
+        </form>
+
+    </div>
+
+    <script>
+        // Устанавливаем минимальную дату на сегодня
+        document.addEventListener('DOMContentLoaded', function () {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            const todayDate = `${yyyy}-${mm}-${dd}`;
+
+            const dateInput = document.querySelector('input[name="delivery_date"]');
+            if (dateInput) {
+                dateInput.min = todayDate;
+            }
+        });
+    </script>
 
 {% endblock %}

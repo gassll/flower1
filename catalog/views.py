@@ -7,6 +7,8 @@ from .models import Favorite, Cart
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.utils import timezone
+from datetime import datetime
 
 
 def my_view(request):
@@ -54,7 +56,6 @@ def catalog(request):
     user_favorites = []
     if request.user.is_authenticated:
         user_favorites = [f.product for f in Favorite.objects.filter(user=request.user)]
-
 
     return render(request, 'catalog.html', {
         'categories': categories,
@@ -217,10 +218,15 @@ def checkout(request):
 
     total = sum(item.product.price * item.quantity for item in items)
 
+    if not items.exists():
+        messages.warning(request, 'Ваша корзина пуста')
+        return redirect('catalog')
+
     return render(request, 'catalog/checkout.html', {
         'items': items,
         'total': total,
         'cart_count': get_cart_count(request.user),
+        'today': timezone.now().date(),
     })
 
 
@@ -233,12 +239,27 @@ def create_order(request):
             messages.error(request, 'Ваша корзина пуста')
             return redirect('cart')
 
+        items_data = []
+        for item in cart_items:
+            items_data.append({
+                'product_id': item.product.id,
+                'product_name': item.product.name,
+                'product_price': float(item.product.price),
+                'quantity': item.quantity,
+                'total': float(item.product.price * item.quantity)
+            })
+
         order = Order.objects.create(
             name=request.POST.get('name'),
             phone=request.POST.get('phone'),
             address=request.POST.get('address'),
             comment=request.POST.get('comment', ''),
             payment_method=request.POST.get('payment_method'),
+            delivery_date=request.POST.get('delivery_date'),
+            delivery_time=request.POST.get('delivery_time'),
+            cart_items=items_data,  # Сохраняем состав заказа
+            total_sum=sum(item.product.price * item.quantity for item in cart_items),
+            user=request.user
         )
 
         cart_items.delete()
@@ -267,3 +288,4 @@ def order_success(request):
         'order': order,
         'cart_count': get_cart_count(request.user),
     })
+

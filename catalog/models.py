@@ -3,6 +3,7 @@ from slugify import slugify
 from autoslug import AutoSlugField
 from django.conf import settings
 
+
 class Category(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
@@ -70,17 +71,39 @@ class Cart(models.Model):
 
 
 class Order(models.Model):
-    PAYMENT_CHOICES = [
+    PAYMENT_METHODS = [
         ('cash', 'Наличные'),
         ('card', 'Банковская карта'),
     ]
 
-    name = models.CharField(max_length=100, verbose_name='Имя')
+    DELIVERY_TIMES = [
+        ('09:00-11:00', '09:00 - 11:00'),
+        ('11:00-13:00', '11:00 - 13:00'),
+        ('13:00-15:00', '13:00 - 15:00'),
+        ('15:00-17:00', '15:00 - 17:00'),
+        ('17:00-19:00', '17:00 - 19:00'),
+        ('19:00-21:00', '19:00 - 21:00'),
+    ]
+
+    # Используйте settings.AUTH_USER_MODEL вместо User
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True,
+                             verbose_name='Пользователь')
+    name = models.CharField(max_length=200, verbose_name='Имя')
     phone = models.CharField(max_length=20, verbose_name='Телефон')
-    address = models.CharField(max_length=255, verbose_name='Адрес')
+    address = models.TextField(verbose_name='Адрес доставки')
+    delivery_date = models.DateField(verbose_name='Дата доставки')
+    delivery_time = models.CharField(max_length=50, choices=DELIVERY_TIMES, verbose_name='Время доставки')
     comment = models.TextField(blank=True, verbose_name='Комментарий')
-    payment_method = models.CharField(max_length=10, choices=PAYMENT_CHOICES, verbose_name='Способ оплаты')
+    payment_method = models.CharField(max_length=10, choices=PAYMENT_METHODS, verbose_name='Способ оплаты')
+    cart_items = models.JSONField(default=dict, verbose_name='Товары в заказе')
+    total_sum = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name='Сумма заказа')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+    status = models.CharField(max_length=20, default='new', verbose_name='Статус заказа')
 
     def __str__(self):
-        return f'Заказ #{self.id} - {self.name}'
+        return f'Заказ #{self.id} от {self.created_at.strftime("%d.%m.%Y")}'
+
+    class Meta:
+        verbose_name = 'Заказ'
+        verbose_name_plural = 'Заказы'
+        ordering = ['-created_at']
