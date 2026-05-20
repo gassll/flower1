@@ -19,22 +19,45 @@
             {% if order %}
                 <div style="background: #f8f8f8; border-radius: 12px; padding: 25px; margin-bottom: 25px;">
                     <p class="mb-2"><strong>Заказ №{{ order.id }}</strong></p>
-                    <p class="mb-2">Имя: {{ order.name }}</p>
-                    <p class="mb-2">Телефон: {{ order.phone }}</p>
-                    <p class="mb-2">Адрес: {{ order.address }}</p>
-                    <p class="mb-0">Оплата: {% if order.payment_method == 'cash' %}Наличные{% else %}Карта{% endif %}</p>
+                    <p class="mb-2"><strong>Дата заказа:</strong> {{ order.created_at|date:"d.m.Y H:i" }}</p>
+                    <hr>
+                    <p class="mb-2"><strong>Имя:</strong> {{ order.name }}</p>
+                    <p class="mb-2"><strong>Телефон:</strong> {{ order.phone }}</p>
+                    <p class="mb-2"><strong>Адрес доставки:</strong> {{ order.address }}</p>
+
+                    <!-- Информация о доставке -->
+                    <div style="background: #e8f5e9; border-radius: 8px; padding: 12px; margin: 15px 0;">
+                        <p class="mb-2"><strong> Дата доставки:</strong> {{ order.delivery_date|date:"d.m.Y" }}</p>
+                        <p class="mb-0"><strong> Время доставки:</strong> {{ order.delivery_time }}</p>
+                    </div>
+
+                    <p class="mb-2"><strong>Способ оплаты:</strong>
+                        {% if order.payment_method == 'cash' %}
+                            Наличные (при получении)
+                        {% else %}
+                             Банковская карта (онлайн)
+                        {% endif %}
+                    </p>
+
                     {% if order.comment %}
-                        <p class="mb-0 mt-2">Комментарий: {{ order.comment }}</p>
+                        <p class="mb-0 mt-2"><strong>Комментарий к заказу:</strong><br>{{ order.comment }}</p>
+                    {% endif %}
+
+                    <!-- Сумма заказа (если есть) -->
+                    {% if order.total_sum %}
+                        <hr>
+                        <p class="mb-0"><strong>Сумма заказа:</strong> {{ order.total_sum }} ₽</p>
                     {% endif %}
                 </div>
             {% endif %}
 
             <p class="text-center mb-4" style="color: #666;">
-                Наш менеджер свяжется с вами
+                Наш менеджер свяжется с вами для подтверждения заказа.<br>
+                Доставка будет осуществлена в выбранное время.
             </p>
 
             <div class="text-center">
-                <a href="{% url 'catalog' %}" class="btn">В каталог</a>
+                <a href="{% url 'catalog' %}" class="btn btn-dark px-4 py-2">В каталог</a>
             </div>
 
         </div>
