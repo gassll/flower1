@@ -1,7 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.core.exceptions import ValidationError
-from django.contrib.auth.models import User
 import re
 from .models import CustomUser
 
@@ -82,10 +81,9 @@ class RegisterForm(UserCreationForm):
 
         return email
 
-
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.first_name = self.cleaned_data.get('full_name')
+        user.full_name = self.cleaned_data.get('full_name')  # Сохраняем в поле full_name
         user.email = self.cleaned_data.get('email')
         user.phone = self.cleaned_data.get('phone')
 
@@ -100,11 +98,12 @@ class LoginForm(AuthenticationForm):
     password = forms.CharField(label='Пароль', widget=forms.PasswordInput)
 
     error_messages = {
-        'invalid_login':'Неверный логин или пароль',
-        'inactive':'Учетная запись отключена'
+        'invalid_login': 'Неверный логин или пароль',
+        'inactive': 'Учетная запись отключена'
     }
-    def __init__(self,request=None, *args, **kwargs):
-        super().__init__(request,*args, **kwargs)
+
+    def __init__(self, request=None, *args, **kwargs):
+        super().__init__(request, *args, **kwargs)
 
         for field in self.fields.values():
             field.widget.attrs.update({

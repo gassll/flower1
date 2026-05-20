@@ -1,0 +1,39 @@
+{% extends 'catalog/base_profile.html' %}
+
+{% block profile_content %}
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <h4 class="card-title mb-4">Редактирование профиля</h4>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label for="username" class="form-label">Имя пользователя</label>
+                <input type="text" class="form-control" id="username" value="{{ user.username }}" disabled>
+                <small class="text-muted">Имя пользователя нельзя изменить</small>
+            </div>
+
+            <div class="mb-3">
+                <label for="first_name" class="form-label">Имя</label>
+                <input type="text" class="form-control" id="first_name" name="first_name" value="{{ user.first_name }}">
+            </div>
+
+            <div class="mb-3">
+                <label for="last_name" class="form-label">Фамилия</label>
+                <input type="text" class="form-control" id="last_name" name="last_name" value="{{ user.last_name }}">
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                <a href="{% url 'profile' %}" class="btn btn-secondary">Отмена</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

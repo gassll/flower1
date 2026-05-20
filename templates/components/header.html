@@ -44,15 +44,21 @@
             </a>
 
             {% if user.is_authenticated %}
-                <a href="{% url 'login' %}?next={{ request.path }}" class="icon-btn" title="Профиль">
+                <a href="{% url 'profile' %}" class="icon-btn" title="Личный кабинет">
                     <img src="{% static 'icons/profile.png' %}" alt="profile">
                 </a>
-                <form action="{% url 'logout' %}" method="post" style="display: inline; margin-left: 8px;">
+
+                <form action="{% url 'logout' %}" method="post" style="display: inline;">
                     {% csrf_token %}
-                    <button type="submit" class="btn">
+                    <button type="submit" class="btn btn-link"
+                            style="background: none; border: none; color: #333; cursor: pointer; padding: 0; margin-left: 8px;">
                         Выйти
                     </button>
                 </form>
+
+                <span class="user-name" style="margin-left: 8px; font-size: 14px; color: #666;">
+        {{ user.username }}
+    </span>
             {% else %}
                 <a href="{% url 'login' %}?next={{ request.path }}" class="icon-btn" title="Войти">
                     <img src="{% static 'icons/profile.png' %}" alt="login">
@@ -78,6 +84,95 @@
 </header>
 
 <style>
+    .header__icons {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .icon-btn {
+        cursor: pointer;
+        transition: opacity 0.3s;
+    }
+
+    .icon-btn:hover {
+        opacity: 0.7;
+    }
+
+    .user-name {
+        margin-left: 8px;
+        font-size: 14px;
+        color: #666;
+    }
+
+    /* Стили для модального окна поиска */
+    .search-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .search-box {
+        position: relative;
+        width: 90%;
+        max-width: 600px;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    .search-form {
+        display: flex;
+        gap: 10px;
+    }
+
+    .search-form input {
+        flex: 1;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    .search-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0 10px;
+    }
+
+    .close {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        font-size: 30px;
+        cursor: pointer;
+        color: #333;
+    }
+
+    .close:hover {
+        color: #000;
+    }
+
+    button[type="submit"] {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        padding: 8px 15px;
+        transition: opacity 0.3s;
+    }
+
+    button[type="submit"]:hover {
+        opacity: 0.7;
+    }
 </style>
 
 <script>
@@ -88,4 +183,18 @@
     function closeSearch() {
         document.getElementById('searchModal').style.display = 'none';
     }
+
+    // Закрытие по нажатию ESC
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            closeSearch();
+        }
+    });
+
+    // Закрытие по клику вне окна
+    document.getElementById('searchModal').addEventListener('click', function (event) {
+        if (event.target === this) {
+            closeSearch();
+        }
+    });
 </script>

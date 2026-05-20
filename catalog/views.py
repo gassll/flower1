@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 from datetime import datetime
+from django.contrib.auth.forms import PasswordChangeForm
 
 
 def my_view(request):
@@ -289,3 +290,104 @@ def order_success(request):
         'cart_count': get_cart_count(request.user),
     })
 
+
+@login_required
+def profile(request):
+    """Главная страница личного кабинета"""
+    recent_orders = Order.objects.filter(user=request.user).order_by('-created_at')[:5]
+    total_orders = Order.objects.filter(user=request.user).count()
+    favorites_count = Favorite.objects.filter(user=request.user).count()
+    cart_count = Cart.objects.filter(user=request.user).count()
+
+    context = {
+        'user': request.user,
+        'recent_orders': recent_orders,
+        'total_orders': total_orders,
+        'favorites_count': favorites_count,
+        'cart_count': cart_count,
+        'section': 'dashboard'
+    }
+    return render(request, 'catalog/profile_dashboard.html', context)
+
+
+@login_required
+def profile_orders(request):
+    """Список всех заказов пользователя"""
+    orders = Order.objects.filter(user=request.user).order_by('-created_at')
+
+    context = {
+        'orders': orders,
+        'cart_count': get_cart_count(request.user),
+        'section': 'orders'
+    }
+    return render(request, 'catalog/profile_orders.html', context)
+
+
+@login_required
+def profile_order_detail(request, order_id):
+    """Детальная информация о заказе"""
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+
+    context = {
+        'order': order,
+        'cart_count': get_cart_count(request.user),
+        'section': 'orders'
+    }
+    return render(request, 'catalog/profile_order_detail.html', context)
+
+
+@login_required
+def profile_edit(request):
+    """Редактирование профиля пользователя"""
+    if request.method == 'POST':
+        request.user.first_name = request.POST.get('first_name', '')
+        request.user.last_name = request.POST.get('last_name', '')
+        request.user.email = request.POST.get('email', '')
+        request.user.save()
+
+        messages.success(request, 'Профиль успешно обновлен!')
+        return redirect('profile')
+
+    context = {
+        'user': request.user,
+        'cart_count': get_cart_count(request.user),
+        'section': 'profile'
+    }
+    return render(request, 'catalog/profile_edit.html', context)
+
+
+@login_required
+def change_password(request):
+    """Изменение пароля"""
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Пароль успешно изменен!')
+            return redirect('profile')
+        else:
+            for error in form.errors.values():
+                messages.error(request, error)
+    else:
+        form = PasswordChangeForm(request.user)
+
+    context = {
+        'form': form,
+        'cart_count': get_cart_count(request.user),
+        'section': 'password'
+    }
+    return render(request, 'catalog/change_password.html', context)
+
+
+@login_required
+def profile_favorites(request):
+    """Избранные товары пользователя"""
+    favorites = Favorite.objects.filter(user=request.user).select_related('product')
+
+    context = {
+        'favorites': favorites,
+        'cart_count': get_cart_count(request.user),
+        'section': 'favorites'
+    }
+    return render(request, 'catalog/profile_favorites.html', context)

@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Боковое меню -->
+        <div class="col-md-3 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                             style="width: 80px; height: 80px;">
+                            <i class="fas fa-user fa-3x text-secondary"></i>
+                        </div>
+                        <h5 class="mb-1">{{ user.first_name|default:user.username }}</h5>
+                        <p class="text-muted small">{{ user.email }}</p>
+                    </div>
+
+                    <hr>
+
+                    <nav class="nav flex-column">
+                        <a class="nav-link py-2 {% if section == 'dashboard' %}active text-primary{% else %}text-dark{% endif %}"
+                           href="{% url 'profile' %}">
+                            <i class="fas fa-tachometer-alt me-2"></i> Обзор
+                        </a>
+                        <a class="nav-link py-2 {% if section == 'orders' %}active text-primary{% else %}text-dark{% endif %}"
+                           href="{% url 'profile_orders' %}">
+                            <i class="fas fa-shopping-bag me-2"></i> Мои заказы
+                        </a>
+                        <a class="nav-link py-2 {% if section == 'favorites' %}active text-primary{% else %}text-dark{% endif %}"
+                           href="{% url 'profile_favorites' %}">
+                            <i class="fas fa-heart me-2"></i> Избранное
+                        </a>
+                        <a class="nav-link py-2 {% if section == 'profile' %}active text-primary{% else %}text-dark{% endif %}"
+                           href="{% url 'profile_edit' %}">
+                            <i class="fas fa-user-edit me-2"></i> Редактировать профиль
+                        </a>
+                        <a class="nav-link py-2 {% if section == 'password' %}active text-primary{% else %}text-dark{% endif %}"
+                           href="{% url 'change_password' %}">
+                            <i class="fas fa-key me-2"></i> Сменить пароль
+                        </a>
+                        <a class="nav-link py-2 text-danger" href="{% url 'logout' %}">
+                            <i class="fas fa-sign-out-alt me-2"></i> Выйти
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- Основной контент -->
+        <div class="col-md-9">
+            {% block profile_content %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .nav-link.active {
+        background-color: #f8f9fa;
+        font-weight: 600;
+    }
+    .nav-link:hover:not(.active) {
+        background-color: #f8f9fa;
+    }
+</style>
+{% endblock %}

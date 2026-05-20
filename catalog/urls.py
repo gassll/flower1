@@ -20,4 +20,12 @@ urlpatterns = [
     path('checkout/', views.checkout, name='checkout'),
     path('order/create/', views.create_order, name='create_order'),
     path('order/success/', views.order_success, name='order_success'),
+
+    path('profile/', views.profile, name='profile'),
+    path('profile/orders/', views.profile_orders, name='profile_orders'),
+    path('profile/order/<int:order_id>/', views.profile_order_detail, name='profile_order_detail'),
+    path('profile/edit/', views.profile_edit, name='profile_edit'),
+    path('profile/change-password/', views.change_password, name='change_password'),
+    path('profile/favorites/', views.profile_favorites, name='profile_favorites'),
+    path('product/<int:id>/', views.product_detail, name='product_detail'),
 ]
