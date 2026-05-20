@@ -6,9 +6,8 @@ from django.conf import settings
 class Category(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
-    image = models.ImageField(upload_to='categories/', blank=True)
-    slug = models.SlugField(unique=True, blank=True)
-
+    image = models.ImageField(upload_to='categories/', blank=True, null=True)
+    slug = models.SlugField(unique=True, blank=True, null=True)
     is_featured = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
@@ -68,3 +67,20 @@ class Cart(models.Model):
 
     def __str__(self):
         return f'{self.user} - {self.product}'
+
+
+class Order(models.Model):
+    PAYMENT_CHOICES = [
+        ('cash', 'Наличные'),
+        ('card', 'Банковская карта'),
+    ]
+
+    name = models.CharField(max_length=100, verbose_name='Имя')
+    phone = models.CharField(max_length=20, verbose_name='Телефон')
+    address = models.CharField(max_length=255, verbose_name='Адрес')
+    comment = models.TextField(blank=True, verbose_name='Комментарий')
+    payment_method = models.CharField(max_length=10, choices=PAYMENT_CHOICES, verbose_name='Способ оплаты')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+
+    def __str__(self):
+        return f'Заказ #{self.id} - {self.name}'

@@ -6,30 +6,47 @@
 
     <h1>Оформление заказа</h1>
 
-    <form method="POST">
+    <form method="POST" action="{% url 'create_order' %}">
         {% csrf_token %}
 
-        <div class="form-group">
+        <div class="form-group mb-3">
             <label>Имя</label>
             <input type="text" name="name" required class="form-control">
         </div>
 
-        <div class="form-group">
+        <div class="form-group mb-3">
             <label>Телефон</label>
             <input type="text" name="phone" required class="form-control">
         </div>
 
-        <div class="form-group">
+        <div class="form-group mb-3">
             <label>Адрес доставки</label>
             <input type="text" name="address" required class="form-control">
         </div>
 
-        <div class="form-group">
+        <div class="form-group mb-3">
             <label>Комментарий</label>
-            <textarea name="comment" class="form-control"></textarea>
+            <textarea name="comment" class="form-control" rows="3"></textarea>
         </div>
 
-        <button type="submit" class="btn btn-dark mt-3">
+        <!-- Выбор способа оплаты -->
+        <div class="form-group mb-4">
+            <label class="fw-bold mb-2">Способ оплаты</label>
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="payment_method" id="cash" value="cash" required>
+                <label class="form-check-label" for="cash">
+                    Наличные (при получении)
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="payment_method" id="card" value="card" required>
+                <label class="form-check-label" for="card">
+                    Банковская карта (онлайн)
+                </label>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-dark mt-3 px-4 py-2">
             Подтвердить заказ
         </button>
 

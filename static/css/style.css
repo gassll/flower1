@@ -508,10 +508,21 @@ body {
     display: inline-block;
 }
 
-.catalog__categories .btn.active {
+.catalog__categories a.btn.active {
     background: #000;
     color: #fff;
     border-color: #000;
+}
+
+.catalog__categories a.btn {
+    transition: all 0.25s ease;
+}
+
+.catalog__categories a.btn.active {
+    background: #000 !important;
+    color: #fff !important;
+    border-color: #000 !important;
+    pointer-events: none;
 }
 
 .add-product-btn {
@@ -1159,4 +1170,118 @@ body {
 .cart-total {
     font-size: 20px;
     font-weight: 600;
+}
+
+/* ===== СТРАНИЦА УСПЕШНОГО ЗАКАЗА ===== */
+
+.order-success {
+    padding: 60px 0;
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+}
+
+.order-success__wrapper {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.order-success__icon {
+    margin-bottom: 30px;
+}
+
+.order-success__icon svg {
+    width: 80px;
+    height: 80px;
+}
+
+.order-success__title {
+    font-size: 36px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #198754;
+    margin-bottom: 30px;
+    letter-spacing: 1px;
+}
+
+.order-success__card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    border: 1px solid #eee;
+}
+
+.order-success__greeting {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: #111;
+}
+
+.order-success__details {
+    background: #f8f8f8;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.order-success__details h5 {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+    color: #666;
+}
+
+.order-success__details p {
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.order-success__details p:last-child {
+    margin-bottom: 0;
+}
+
+.order-success__details strong {
+    color: #111;
+    font-weight: 600;
+}
+
+.order-success__message {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.order-success__actions {
+    display: flex;
+    justify-content: center;
+}
+
+.order-success__actions .btn {
+    padding: 12px 30px;
+    font-size: 14px;
+}
+
+@media (max-width: 768px) {
+    .order-success {
+        padding: 40px 20px;
+    }
+
+    .order-success__title {
+        font-size: 28px;
+    }
+
+    .order-success__card {
+        padding: 20px;
+    }
+
+    .order-success__greeting {
+        font-size: 16px;
+    }
 }

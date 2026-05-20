@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+
+            <div class="text-center mb-4">
+                <svg width="70" height="70" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="#198754" stroke-width="2" fill="#fff"/>
+                    <path d="M8 12L11 15L16 9" stroke="#198754" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </div>
+
+            <h1 class="text-center mb-4" style="font-size: 28px;">Спасибо за заказ!</h1>
+
+            {% if order %}
+                <div style="background: #f8f8f8; border-radius: 12px; padding: 25px; margin-bottom: 25px;">
+                    <p class="mb-2"><strong>Заказ №{{ order.id }}</strong></p>
+                    <p class="mb-2">Имя: {{ order.name }}</p>
+                    <p class="mb-2">Телефон: {{ order.phone }}</p>
+                    <p class="mb-2">Адрес: {{ order.address }}</p>
+                    <p class="mb-0">Оплата: {% if order.payment_method == 'cash' %}Наличные{% else %}Карта{% endif %}</p>
+                    {% if order.comment %}
+                        <p class="mb-0 mt-2">Комментарий: {{ order.comment }}</p>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            <p class="text-center mb-4" style="color: #666;">
+                Наш менеджер свяжется с вами
+            </p>
+
+            <div class="text-center">
+                <a href="{% url 'catalog' %}" class="btn">В каталог</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

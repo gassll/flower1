@@ -12,44 +12,43 @@
 
         <div class="catalog__filters-wrapper">
 
-            <!-- КАТЕГОРИИ -->
             <div class="catalog__categories">
-
-                <a href="{% url 'catalog' %}"
-                   class="btn {% if not category_id %}active{% endif %}">
+                <a href="{% url 'catalog' %}{% if min_price or max_price %}?min_price={{ min_price }}&max_price={{ max_price }}{% endif %}"
+                   class="btn{% if not category_id %} active{% endif %}">
                     Все
                 </a>
 
                 {% for category in categories %}
-                    <a href="{% url 'catalog' %}?category={{ category.id }}"
-                       class="btn {% if category_id == category.id|stringformat:'s' %}active{% endif %}">
+                    <a href="{% url 'catalog' %}?category=
+                            {{ category.id }}{% if min_price or max_price %}&min_price={{ min_price }}&max_price={{ max_price }}{% endif %}"
+                       class="btn{% if category_id|stringformat:'s' == category.id|stringformat:'s' %} active{% endif %}">
                         {{ category.name }}
                     </a>
                 {% endfor %}
-
             </div>
 
-            <!-- ФИЛЬТР ЦЕНЫ -->
             <form method="GET" class="catalog__price-filter">
+                {% if category_id %}
+                    <input type="hidden" name="category" value="{{ category_id }}">
+                {% endif %}
 
                 <input type="number"
                        name="min_price"
                        placeholder="От"
-                       value="{% if min_price %}{{ min_price }}{% else %}{{ request.GET.min_price }}{% endif %}"
+                       value="{{ min_price }}"
                        class="price-input"
                        min="1">
 
                 <input type="number"
                        name="max_price"
                        placeholder="До"
-                       value="{% if max_price %}{{ max_price }}{% else %}{{ request.GET.max_price }}{% endif %}"
+                       value="{{ max_price }}"
                        class="price-input"
                        min="1">
 
                 <button type="submit" class="btn">OK</button>
 
                 <a href="{% url 'catalog' %}" class="btn">Сброс</a>
-
             </form>
 
         </div>

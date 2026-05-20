@@ -1,11 +1,12 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Category, Product
+from .models import Category, Product, Order
 from .forms import ProductForm
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import user_passes_test
 from .models import Favorite, Cart
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 
 def my_view(request):
@@ -35,11 +36,9 @@ def catalog(request):
 
     products = Product.objects.filter(is_available=True).select_related('category')
 
-    # категория
     if category_id:
         products = products.filter(category_id=category_id)
 
-    # цена
     if min_price:
         try:
             products = products.filter(price__gte=int(min_price))
@@ -63,6 +62,7 @@ def catalog(request):
         'min_price': min_price,
         'max_price': max_price,
         'user_favorites': user_favorites,
+        'current_get': request.GET,
     })
 
 
@@ -219,5 +219,50 @@ def checkout(request):
     return render(request, 'catalog/checkout.html', {
         'items': items,
         'total': total,
+        'cart_count': get_cart_count(request.user),
+    })
+
+
+@login_required
+def create_order(request):
+    if request.method == 'POST':
+        cart_items = Cart.objects.filter(user=request.user)
+
+        if not cart_items.exists():
+            messages.error(request, 'Ваша корзина пуста')
+            return redirect('cart')
+
+        order = Order.objects.create(
+            name=request.POST.get('name'),
+            phone=request.POST.get('phone'),
+            address=request.POST.get('address'),
+            comment=request.POST.get('comment', ''),
+            payment_method=request.POST.get('payment_method'),
+        )
+
+        cart_items.delete()
+
+        request.session['last_order_id'] = order.id
+
+        messages.success(request, f'Заказ #{order.id} успешно оформлен!')
+
+        return redirect('order_success')
+
+    return redirect('checkout')
+
+
+@login_required
+def order_success(request):
+    order_id = request.session.get('last_order_id')
+    order = None
+
+    if order_id:
+        try:
+            order = Order.objects.get(id=order_id)
+        except Order.DoesNotExist:
+            pass
+
+    return render(request, 'catalog/order_success.html', {
+        'order': order,
         'cart_count': get_cart_count(request.user),
     })
