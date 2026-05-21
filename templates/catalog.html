@@ -20,6 +20,7 @@
 
             <div class="catalog__categories">
                 <a href="
+
                         {% url 'catalog' %}{% if min_price or max_price %}?min_price={{ min_price }}&max_price={{ max_price }}{% endif %}"
                    class="btn{% if not category_id %} active{% endif %}">
                     Все
@@ -27,6 +28,7 @@
 
                 {% for category in categories %}
                     <a href="{% url 'catalog' %}?category=
+
 
 
 
@@ -66,19 +68,15 @@
                 <a href="{% url 'catalog' %}" class="btn">Сброс</a>
             </form>
 
+
+
+            {% if request.user.is_authenticated and request.user.is_staff %}
+                <a href="{% url 'add_product' %}" class="btn btn-dark add-product-btn">
+                    + Добавить товар
+                </a>
+            {% endif %}
         </div>
 
-        {% if request.user.is_authenticated and request.user.is_staff %}
-            <a href="{% url 'add_product' %}" class="btn btn-dark add-product-btn">
-                + Добавить товар
-            </a>
-        {% endif %}
-
-
-        <div style="height: 20px;"></div>
-
-
-        <!-- БЛОК С СООБЩЕНИЕМ, ЕСЛИ ТОВАРОВ НЕТ -->
         {% if products %}
             <div class="catalog__grid">
 
