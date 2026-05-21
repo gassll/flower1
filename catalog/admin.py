@@ -4,6 +4,7 @@ from image_uploader_widget.widgets import ImageUploaderWidget
 from .models import Category, Product
 
 
+
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ['name', 'slug', 'is_featured']
@@ -28,3 +29,4 @@ class ProductAdmin(admin.ModelAdmin):
     formfield_overrides = {
         models.ImageField: {'widget': ImageUploaderWidget},
     }
+
