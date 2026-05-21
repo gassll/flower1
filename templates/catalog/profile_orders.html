@@ -15,7 +15,6 @@
                             <th>Дата доставки</th>
                             <th>Время доставки</th>
                             <th>Сумма</th>
-                            <th>Статус</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -27,16 +26,7 @@
                             <td>{{ order.delivery_date|date:"d.m.Y" }}</td>
                             <td>{{ order.delivery_time }}</td>
                             <td>{{ order.total_sum }} ₽</td>
-                            <td>
-                                <span class="badge" style="background-color:
-                                    {% if order.status == 'new' %}#007bff
-                                    {% elif order.status == 'processing' %}#ffc107
-                                    {% elif order.status == 'delivered' %}#28a745
-                                    {% elif order.status == 'cancelled' %}#dc3545
-                                    {% else %}#6c757d{% endif %}">
-                                    {{ order.get_status_display }}
-                                </span>
-                            </td>
+
                             <td>
                                 <a href="{% url 'profile_order_detail' order.id %}" class="btn btn-sm btn-outline-primary">
                                     Детали

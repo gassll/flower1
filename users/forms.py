@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UserChangeForm
 from django.core.exceptions import ValidationError
 import re
 from .models import CustomUser
@@ -109,3 +109,34 @@ class LoginForm(AuthenticationForm):
             field.widget.attrs.update({
                 'class': 'form-control',
             })
+
+
+
+class CustomUserAdminForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = "__all__"
+
+    def clean_phone(self):
+        phone = self.cleaned_data.get("phone")
+
+        qs = CustomUser.objects.filter(phone=phone)
+
+        if self.instance.pk:
+            qs = qs.exclude(pk=self.instance.pk)
+
+        if qs.exists():
+            raise forms.ValidationError("Такой телефон уже существует")
+
+        return phone
+
+
+class CustomUserCreationForm(UserCreationForm):
+    class Meta:
+        model = CustomUser
+        fields = ('username', 'full_name', 'phone', 'email', 'role')
+
+class CustomUserChangeForm(UserChangeForm):
+    class Meta:
+        model = CustomUser
+        fields = ('username', 'full_name', 'phone', 'email', 'role', 'is_staff', 'is_active')

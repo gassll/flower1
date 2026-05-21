@@ -11,6 +11,7 @@ from django.utils import timezone
 from datetime import datetime
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
+from .decorators import manager_or_admin_required
 
 
 def my_view(request):
@@ -402,3 +403,27 @@ def profile_favorites(request):
         'section': 'favorites'
     }
     return render(request, 'catalog/profile_favorites.html', context)
+
+
+@manager_or_admin_required
+def edit_product(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+
+    form = ProductForm(request.POST or None, request.FILES or None, instance=product)
+
+    if form.is_valid():
+        form.save()
+        return redirect('catalog')
+
+    return render(request, 'catalog/edit_product.html', {'form': form})
+
+
+@manager_or_admin_required
+def delete_product(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+
+    if request.method == "POST":
+        product.delete()
+        return redirect('catalog')
+
+    return render(request, 'catalog/delete_product.html', {'product': product})

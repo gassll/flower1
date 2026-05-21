@@ -1,12 +1,14 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser
+from .forms import CustomUserCreationForm, CustomUserChangeForm
 
-
-# Register your models here.
 
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
+
+    form = CustomUserChangeForm
+    add_form = CustomUserCreationForm
 
     list_display = (
         'username',
@@ -18,30 +20,23 @@ class CustomUserAdmin(UserAdmin):
         'is_active',
     )
 
-    list_filter = (
-        'role',
-        'is_staff',
-        'is_active',
-    )
-
-    search_fields = (
-        'username',
-        'full_name',
-        'phone',
-        'email',
-    )
-
-    list_editable = (
-        'role',
-        'is_active',
-    )
-
     fieldsets = UserAdmin.fieldsets + (
         ('Дополнительно', {
+            'fields': ('full_name', 'phone', 'role')
+        }),
+    )
+
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
             'fields': (
+                'username',
                 'full_name',
                 'phone',
+                'email',
                 'role',
-            )
+                'password1',
+                'password2',
+            ),
         }),
     )

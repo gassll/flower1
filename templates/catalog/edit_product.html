@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<section class="product-edit py-5">
+
+    <div class="container">
+
+        <!-- НАЗАД -->
+        <a href="{% url 'catalog' %}" class="back-btn">
+            ← Назад
+        </a>
+
+        <div class="row mt-4">
+
+            <div class="col-lg-8 mx-auto">
+
+                <h1 class="mb-4">
+                    Редактирование товара
+                </h1>
+
+                <div class="card p-4 shadow-sm">
+
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <!-- ФОРМА -->
+                        {{ form.as_p }}
+
+                        <div class="d-flex gap-2 mt-4">
+
+                            <button type="submit" class="btn btn-success">
+                                Сохранить изменения
+                            </button>
+
+                            <a href="{% url 'catalog' %}" class="btn btn-outline-secondary">
+                                Отмена
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
