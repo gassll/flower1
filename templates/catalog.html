@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load admin_urls %}
 
 {% block content %}
 
@@ -21,6 +22,7 @@
 
             <div class="catalog__categories">
                 <a href="
+
                         {% url 'catalog' %}{% if min_price or max_price %}?min_price={{ min_price }}&max_price={{ max_price }}{% endif %}"
                    class="btn{% if not category_id %} active{% endif %}">
                     Все
@@ -28,6 +30,7 @@
 
                 {% for category in categories %}
                     <a href="{% url 'catalog' %}?category=
+
 
 
 
@@ -88,11 +91,11 @@
 
                                 <div class="product-card__admin-actions">
 
-                                    <a href="{% url 'product-edit' product.id %}" class="btn">
+                                    <a href="/admin/catalog/product/{{ product.id }}/change/" class="btn">
                                         Редактировать
                                     </a>
 
-                                    <a href="{% url 'product-delete' product.id %}" class="btn">
+                                    <a href="/admin/catalog/product/{{ product.id }}/delete/" class="btn">
                                         Удалить
                                     </a>
 
