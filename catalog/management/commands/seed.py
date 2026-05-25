@@ -15,9 +15,6 @@ from catalog.models import Category, Product
 class Command(BaseCommand):
     help = "Stable production seed (safe + deterministic image mapping)"
 
-    # =========================
-    # DATA (товар → картинка)
-    # =========================
     DATA = {
         "Вазы": [
             ("Ваза v.120", "vases/vase1.jpg"),
@@ -63,9 +60,7 @@ class Command(BaseCommand):
         ],
     }
 
-    # =========================
-    # MAIN
-    # =========================
+
     def handle(self, *args, **kwargs):
         self.fake = Faker("ru_RU")
 
@@ -75,9 +70,6 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS("✅ SEED DONE"))
 
-    # =========================
-    # RESET SAFE
-    # =========================
     def reset(self):
         self.stdout.write("🧹 Reset...")
 
@@ -90,9 +82,7 @@ class Command(BaseCommand):
 
         os.makedirs(media_path, exist_ok=True)
 
-    # =========================
-    # CATEGORIES (SAFE CACHE)
-    # =========================
+
     def create_categories(self):
         self.stdout.write("🌸 Creating categories...")
 
@@ -107,9 +97,7 @@ class Command(BaseCommand):
             self.categories[name] = obj
             self.stdout.write(f"✔ {name}")
 
-    # =========================
-    # PRODUCTS
-    # =========================
+
     def create_products(self):
         self.stdout.write("🌷 Creating products...")
 
@@ -132,9 +120,7 @@ class Command(BaseCommand):
 
                 self.stdout.write(f"   ✓ {product_name}")
 
-    # =========================
-    # IMAGE ATTACH
-    # =========================
+
     def attach_image(self, obj, relative_path):
 
         full_path = os.path.join(
@@ -157,15 +143,10 @@ class Command(BaseCommand):
         except Exception as e:
             self.stdout.write(f"⚠ image error: {e}")
 
-    # =========================
-    # UNIQUE FILE NAME
-    # =========================
+
     def unique_name(self, path):
         import uuid
         return f"{uuid.uuid4().hex}_{os.path.basename(path)}"
 
-    # =========================
-    # PRICE
-    # =========================
     def random_price(self):
         return round(random.randint(1000, 20000) / 50) * 50

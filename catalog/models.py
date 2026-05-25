@@ -85,7 +85,6 @@ class Order(models.Model):
         ('19:00-21:00', '19:00 - 21:00'),
     ]
 
-    # Используйте settings.AUTH_USER_MODEL вместо User
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True,
                              verbose_name='Пользователь')
     name = models.CharField(max_length=200, verbose_name='Имя')
