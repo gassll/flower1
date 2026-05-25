@@ -1,7 +1,7 @@
 {% load static %}
 
-<header class="header">
 
+<header class="header">
     <div class="container header__top">
         <div class="header__info">
             <span>ПРИЁМ ЗАКАЗОВ</span>
@@ -17,57 +17,63 @@
     <div class="header__divider"></div>
 
     <div class="container header__main">
-
         <a href="/" class="logo">
             <img src="{% static 'icons/logo.svg' %}" alt="Flowerna">
         </a>
 
-        <nav class="nav">
+        <nav class="nav" id="desktopNav">
             <a href="{% url 'home' %}">ГЛАВНАЯ</a>
             <a href="{% url 'catalog' %}">КАТАЛОГ</a>
             <a href="{% url 'kompanijam' %}">КОМПАНИЯМ</a>
             <a href="{% url 'about' %}">О НАС</a>
         </nav>
 
-        <div class="header__icons">
+        <div class="header__right">
+            <div class="header__icons">
+                <div class="icon-btn" onclick="openSearch()">
+                    <img src="{% static 'icons/proicons_search.svg' %}" alt="search">
+                </div>
 
-            <div class="icon-btn" onclick="openSearch()">
-                <img src="{% static 'icons/proicons_search.svg' %}" alt="search">
+                <a href="{% url 'favorites' %}" class="icon-btn">
+                    <img src="{% static 'icons/si_heart-line.svg' %}" alt="favorites">
+                </a>
+
+                <a href="{% url 'cart' %}" class="icon-btn">
+                    <img src="{% static 'icons/bag.svg' %}" alt="cart">
+                </a>
+
+                {% if user.is_authenticated %}
+                    <a href="{% url 'profile' %}" class="icon-btn" title="Личный кабинет">
+                        <img src="{% static 'icons/profile.png' %}" alt="profile">
+                    </a>
+
+                    <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-logout">Выйти</button>
+                    </form>
+
+                    <span class="user-name">{{ user.username }}</span>
+                {% else %}
+                    <a href="{% url 'login' %}?next={{ request.path }}" class="icon-btn" title="Войти">
+                        <img src="{% static 'icons/profile.png' %}" alt="login">
+                    </a>
+                    <a href="{% url 'register' %}" class="btn register-btn">Регистрация</a>
+                {% endif %}
             </div>
 
-            <a href="{% url 'favorites' %}" class="icon-btn">
-                <img src="{% static 'icons/si_heart-line.svg' %}" alt="favorites">
-            </a>
-
-            <a href="{% url 'cart' %}" class="icon-btn">
-                <img src="{% static 'icons/bag.svg' %}">
-            </a>
-
-            {% if user.is_authenticated %}
-                <a href="{% url 'profile' %}" class="icon-btn" title="Личный кабинет">
-                    <img src="{% static 'icons/profile.png' %}" alt="profile">
-                </a>
-
-                <form action="{% url 'logout' %}" method="post" style="display: inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-link"
-                            style="background: none; border: none; color: #333; cursor: pointer; padding: 0; margin-left: 8px;">
-                        Выйти
-                    </button>
-                </form>
-
-                <span class="user-name" style="margin-left: 8px; font-size: 14px; color: #666;">
-                    {{ user.username }}
-                </span>
-            {% else %}
-                <a href="{% url 'login' %}?next={{ request.path }}" class="icon-btn" title="Войти">
-                    <img src="{% static 'icons/profile.png' %}" alt="login">
-                </a>
-                <a href="{% url 'register' %}" class="btn" style="margin-left: 8px;">Регистрация</a>
-            {% endif %}
-
+            <button type="button" class="burger-btn" id="burgerBtn" aria-label="Открыть меню">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
+    </div>
 
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="{% url 'home' %}">ГЛАВНАЯ</a>
+        <a href="{% url 'catalog' %}">КАТАЛОГ</a>
+        <a href="{% url 'kompanijam' %}">КОМПАНИЯМ</a>
+        <a href="{% url 'about' %}">О НАС</a>
     </div>
 
     <div id="searchModal" class="search-modal">
@@ -84,121 +90,12 @@
     </div>
 </header>
 
-<style>
-    .header__icons {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .icon-btn {
-        cursor: pointer;
-        transition: opacity 0.3s;
-    }
-
-    .icon-btn:hover {
-        opacity: 0.7;
-    }
-
-    .user-name {
-        margin-left: 8px;
-        font-size: 14px;
-        color: #666;
-    }
-
-
-    .search-modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.7);
-        z-index: 9999;
-        justify-content: center;
-        align-items: flex-start;
-        padding-top: 80px;
-    }
-
-    .search-box {
-        position: relative;
-        width: 90%;
-        max-width: 600px;
-        background: white;
-        border-radius: 50px;
-        padding: 5px 15px;
-        margin: 0 auto;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    }
-
-    .search-form {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin: 0;
-    }
-
-    .search-form input {
-        flex: 1;
-        padding: 12px 0;
-        border: none;
-        outline: none;
-        font-size: 16px;
-        background: transparent;
-    }
-
-    .search-btn {
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        transition: background 0.3s;
-    }
-
-    .search-btn:hover {
-        background: #f0f0f0;
-    }
-
-    .search-btn img {
-        width: 20px;
-        height: 20px;
-    }
-
-    .close {
-        cursor: pointer;
-        font-size: 24px;
-        padding: 0 5px;
-        color: #999;
-        transition: color 0.3s;
-        line-height: 1;
-    }
-
-    .close:hover {
-        color: #000;
-    }
-
-    button[type="submit"] {
-        background: none;
-        border: none;
-        cursor: pointer;
-    }
-</style>
-
 <script>
     function openSearch() {
         document.getElementById('searchModal').style.display = 'flex';
-        // Автоматически фокусируемся на поле ввода
         setTimeout(function () {
-            document.querySelector('#searchModal input').focus();
+            const input = document.querySelector('#searchModal input');
+            if (input) input.focus();
         }, 100);
     }
 
@@ -206,17 +103,37 @@
         document.getElementById('searchModal').style.display = 'none';
     }
 
-    // Закрытие по нажатию ESC
-    document.addEventListener('keydown', function (event) {
-        if (event.key === 'Escape') {
-            closeSearch();
-        }
-    });
+    document.addEventListener('DOMContentLoaded', function () {
+        const burgerBtn = document.getElementById('burgerBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
 
-    // Закрытие по клику вне окна
-    document.getElementById('searchModal').addEventListener('click', function (event) {
-        if (event.target === this) {
-            closeSearch();
+        if (burgerBtn && mobileMenu) {
+            burgerBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                mobileMenu.classList.toggle('active');
+            });
+
+            document.addEventListener('click', function (e) {
+                if (!burgerBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+                    mobileMenu.classList.remove('active');
+                }
+            });
+        }
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                closeSearch();
+                if (mobileMenu) mobileMenu.classList.remove('active');
+            }
+        });
+
+        const searchModal = document.getElementById('searchModal');
+        if (searchModal) {
+            searchModal.addEventListener('click', function (event) {
+                if (event.target === this) {
+                    closeSearch();
+                }
+            });
         }
     });
 </script>
