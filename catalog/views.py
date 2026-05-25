@@ -350,7 +350,6 @@ def profile_order_detail(request, order_id):
 
 @login_required
 def profile_edit(request):
-    """Редактирование профиля пользователя"""
     if request.method == 'POST':
         request.user.first_name = request.POST.get('first_name', '')
         request.user.last_name = request.POST.get('last_name', '')
@@ -358,15 +357,12 @@ def profile_edit(request):
         request.user.save()
 
         messages.success(request, 'Профиль успешно обновлен!')
-        return redirect('profile')
+        return redirect('profile_edit')
 
-    context = {
+    return render(request, 'catalog/profile_edit.html', {
         'user': request.user,
-        'cart_count': get_cart_count(request.user),
         'section': 'profile'
-    }
-    return render(request, 'catalog/profile_edit.html', context)
-
+    })
 
 @login_required
 def change_password(request):
