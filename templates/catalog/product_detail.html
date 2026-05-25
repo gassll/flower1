@@ -48,7 +48,7 @@
                         от {{ product.price }} ₽
                     </h3>
 
-                    <a href="{% url 'add_to_cart' product.id %}" class="btn">
+                    <a href="{% url 'add_to_cart' product.id %}?next={{ request.META.HTTP_REFERER }}" class="btn">
                         В корзину
                     </a>
 

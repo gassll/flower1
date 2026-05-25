@@ -151,6 +151,12 @@ def add_to_favorites(request, product_id):
     return redirect(request.META.get('HTTP_REFERER', 'catalog'))
 
 
+def get_cart_count(user):
+    if user.is_authenticated:
+        return Cart.objects.filter(user=user).count()
+    return 0
+
+
 @login_required
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
@@ -164,15 +170,12 @@ def add_to_cart(request, product_id):
         cart_item.quantity += 1
         cart_item.save()
 
-    from django.urls import reverse
+    next_url = request.GET.get('next') or request.META.get('HTTP_REFERER')
 
-    return redirect(reverse('catalog'))
+    if next_url:
+        return redirect(next_url)
 
-
-def get_cart_count(user):
-    if user.is_authenticated:
-        return Cart.objects.filter(user=user).count()
-    return 0
+    return redirect('catalog')
 
 
 @login_required
@@ -363,6 +366,7 @@ def profile_edit(request):
         'user': request.user,
         'section': 'profile'
     })
+
 
 @login_required
 def change_password(request):
