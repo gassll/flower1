@@ -37,6 +37,30 @@ body {
     color: #fff;
 }
 
+.btn.btn-primary {
+    border: 1px solid #000 !important;
+    color: #000 !important;
+    background: transparent !important;
+}
+
+.btn.btn-primary:hover {
+    background: #000 !important;
+    color: #fff !important;
+}
+
+
+.btn-custom {
+    border: 1px solid #000 !important;
+    color: #000 !important;
+    background: transparent !important;
+    outline: none !important;
+}
+
+.btn-custom:hover {
+    background: #000 !important;
+    color: #fff !important;
+}
+
 .logo {
     font-size: 28px;
     font-weight: 700;
