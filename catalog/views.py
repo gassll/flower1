@@ -257,14 +257,6 @@ def create_order(request):
             return redirect('cart')
 
         items_data = []
-        for item in cart_items:
-            items_data.append({
-                'product_id': item.product.id,
-                'product_name': item.product.name,
-                'product_price': float(item.product.price),
-                'quantity': item.quantity,
-                'total': float(item.product.price * item.quantity)
-            })
 
         order = Order.objects.create(
             name=request.POST.get('name'),
@@ -274,22 +266,28 @@ def create_order(request):
             payment_method=request.POST.get('payment_method'),
             delivery_date=request.POST.get('delivery_date'),
             delivery_time=request.POST.get('delivery_time'),
-            cart_items=items_data,  # Сохраняем состав заказа
+            cart_items=items_data,
             total_sum=sum(item.product.price * item.quantity for item in cart_items),
             user=request.user
         )
 
+        # 🔥 ВОТ ЭТО ТЫ НЕ СДЕЛАЛ — ГЛАВНОЕ ИСПРАВЛЕНИЕ
+        for item in cart_items:
+            OrderStructure.objects.create(
+                order=order,
+                product=item.product,
+                quantity=item.quantity,
+                unit_price=item.product.price,
+            )
+
         cart_items.delete()
 
         request.session['last_order_id'] = order.id
-
         messages.success(request, f'Заказ #{order.id} успешно оформлен!')
 
         return redirect('order_success')
 
     return redirect('checkout')
-
-
 @login_required
 def order_success(request):
     order_id = request.session.get('last_order_id')

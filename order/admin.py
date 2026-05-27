@@ -1,29 +1,21 @@
 from django.contrib import admin
-from .models import Order, OrderStructure
-
-
-# Inline для отображения товаров в заказе
-class OrderStructureInline(admin.TabularInline):
-    model = OrderStructure
-    extra = 1  # пустая строка для добавления нового товара
-    fields = ['product', 'quantity', 'unit_price']  # какие поля показывать
-    readonly_fields = ['unit_price']  # цена только для чтения
-    autocomplete_fields = ['product']  # поиск товара с автодополнением
-    verbose_name = "Товар"
-    verbose_name_plural = "Товары в заказе"
+from .models import Order
 
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "name", "phone", "delivery_date", "payment_method", "total_sum", "created_at")
-    list_filter = ("payment_method", "delivery_date", "created_at")
-    search_fields = ("name", "phone", "address", "id")
-    readonly_fields = ("total_sum", "created_at")
+    list_display = (
+        "id",
+        "user",
+        "name",
+        "phone",
+        "products_list",
+        "total_sum",
+        "created_at",
+    )
 
-    # Подключаем inline для отображения товаров
-    inlines = [OrderStructureInline]
+    readonly_fields = ("total_sum", "created_at", "pretty_cart_items")
 
-    # Опционально: группировка полей
     fieldsets = (
         ("Информация о заказе", {
             "fields": ("user", "name", "phone", "address")
@@ -34,15 +26,33 @@ class OrderAdmin(admin.ModelAdmin):
         ("Оплата", {
             "fields": ("payment_method", "total_sum")
         }),
+        ("Товары", {
+            "fields": ("pretty_cart_items",)
+        }),
         ("Системная информация", {
-            "fields": ("created_at", "cart_items"),
+            "fields": ("created_at",),
             "classes": ("collapse",)
-        })
+        }),
     )
 
+    def products_list(self, obj):
+        if not obj.cart_items:
+            return "—"
 
-@admin.register(OrderStructure)
-class OrderStructureAdmin(admin.ModelAdmin):
-    list_display = ("id", "order", "product", "quantity", "unit_price")
-    list_filter = ("order",)
-    search_fields = ("order__id", "product__name")
+        return ", ".join(
+            f"{item.get('product_name')} x{item.get('quantity')}"
+            for item in obj.cart_items
+        )
+
+    products_list.short_description = "Товары"
+
+    def pretty_cart_items(self, obj):
+        if not obj.cart_items:
+            return "—"
+
+        return "\n".join(
+            f"🛒 {item.get('product_name')} — {item.get('quantity')} шт. — {item.get('product_price')} ₽"
+            for item in obj.cart_items
+        )
+
+    pretty_cart_items.short_description = "Товары"
