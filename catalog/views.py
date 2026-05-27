@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Category, Product, Order
+from .models import Category, Product
+from order.models import Order
 from .forms import ProductForm
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import user_passes_test

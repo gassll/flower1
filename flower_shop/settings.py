@@ -22,7 +22,7 @@ INSTALLED_APPS = [
     'catalog',
     'users',
     'image_uploader_widget',
-
+    'order',
 ]
 
 MIDDLEWARE = [
